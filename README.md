@@ -11,22 +11,11 @@ With chef already installed (> 0.10.0):
 
     gem install knife-joyent
 
-## Help
+## Usage
 
-    $ knife joyent --help
-    Available joyent subcommands: (for details, knife SUB-COMMAND --help)
+For available commands:
 
-    ** JOYENT COMMANDS **
-    knife joyent flavor list <options>
-    knife joyent image list <options>
-    knife joyent key add -f <keyfile> -k <name>
-    knife joyent key delete -k <name>
-    knife joyent key list
-    knife joyent server create <options>
-    knife joyent server list <options>
-    knife joyent server reboot <server_id>
-    knife joyent server start <server_id>
-    knife joyent server stop <server_id>
+    knife joyent --help
 
 ## Configuration
 
