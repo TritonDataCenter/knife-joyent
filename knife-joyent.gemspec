@@ -1,9 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
+require 'knife-joyent/version'
 
 Gem::Specification.new do |s|
   s.name = "knife-joyent"
-  s.version = "0.1"
+  s.version = KnifeJoyent::VERSION
   s.has_rdoc = true
   s.authors = ["Kevin Chan"]
   s.email = ["kevin@joyent.com"]
