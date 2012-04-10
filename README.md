@@ -21,8 +21,12 @@ With chef already installed (> 0.10.0):
     knife joyent image list <options>
     knife joyent key add -f <keyfile> -k <name>
     knife joyent key delete -k <name>
-    knife joyent machine list <options>
+    knife joyent key list
+    knife joyent server create <options>
     knife joyent server list <options>
+    knife joyent server reboot <server_id>
+    knife joyent server start <server_id>
+    knife joyent server stop <server_id>
 
 ## Configuration
 
