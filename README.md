@@ -15,11 +15,12 @@ With chef already installed (> 0.10.0):
 
     $ knife joyent --help
     Available joyent subcommands: (for details, knife SUB-COMMAND --help)
-    
+
     ** JOYENT COMMANDS **
     knife joyent flavor list <options>
     knife joyent image list <options>
     knife joyent key add -f <keyfile> -k <name>
+    knife joyent key delete -k <name>
     knife joyent machine list <options>
     knife joyent server list <options>
 
@@ -27,7 +28,7 @@ With chef already installed (> 0.10.0):
 
 The following options can be specified in your knife configuration file
 
-### === Required
+### Required
 
 You can authenticate against CloudAPI using either:
 
