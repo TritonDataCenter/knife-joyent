@@ -6,15 +6,14 @@ module KnifeJoyent
 
     include KnifeJoyent::Base
 
-    banner "knife joyent key delete -k <name>"
-
-    option :keyname,
-      :short => '-k KEY_NAME',
-      :long => '--keyname KEY_NAME',
-      :description => 'Name of the key to delete'
+    banner "knife joyent key delete <name>"
 
     def run
-      keyname = config[:keyname]
+      unless name_args.size === 1
+        show_usage
+      end
+
+      keyname = name_args.first
 
       begin
         self.connection.delete_key(keyname)
