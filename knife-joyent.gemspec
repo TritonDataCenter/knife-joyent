@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://wiki.opscode.com/display/chef"
   s.summary = "Joyent CloudAPI Support for Chef's Knife Command"
   s.description = s.summary
-  s.extra_rdoc_files = ["README.md", "LICENSE" ]
+  s.extra_rdoc_files = ["README.md", "LICENSE"]
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
