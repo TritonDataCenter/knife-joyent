@@ -13,13 +13,32 @@ With chef already installed (> 0.10.0):
 
 ## Usage
 
-For available commands:
+For a list of commands:
 
     knife joyent --help
+
+Currently available commands:
+
+    knife joyent flavor list <options>
+    knife joyent image list <options>
+    knife joyent key add -f <keyfile> -k <name>
+    knife joyent key delete <name>
+    knife joyent key list
+    knife joyent server create (options)
+    knife joyent server list <options>
+    knife joyent server reboot <server_id>
+    knife joyent server resize <server_id> -f <flavor>
+    knife joyent server start <server_id>
+    knife joyent server stop <server_id>
+    knife joyent snapshot create <server> <snapshot_name>
+    knife joyent snapshot delete <server> <snapshot_name>
+    knife joyent snapshot list <server_id>
+    knife joyent tag list <server>
 
 ## Configuration
 
 The following options can be specified in your knife configuration file
+``knife.rb``
 
 ### Required
 
