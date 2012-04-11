@@ -36,7 +36,7 @@ module KnifeJoyent
         snapshots << s.created.to_s
       end
 
-      puts ui.list(snapshots, :columns_across, 3)
+      puts ui.list(snapshots, :uneven_columns_across, 3)
     rescue Fog::Compute::Joyent::Errors::NotFound
       puts ui.error("Server #{server} not found.")
     end

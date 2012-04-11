@@ -22,7 +22,8 @@ module KnifeJoyent
         flavor_list << "#{flavor.disk/1024} GB"
         flavor_list << "#{flavor.swap/1024} GB"
       end
-      puts ui.list(flavor_list, :columns_across, 4)
+
+      puts ui.list(flavor_list, :uneven_columns_across, 4)
     end
   end
 end

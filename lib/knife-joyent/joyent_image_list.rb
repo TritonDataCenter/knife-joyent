@@ -24,7 +24,7 @@ module KnifeJoyent
         images << i.type
       end
 
-      puts ui.list(images, :columns_across, 5)
+      puts ui.list(images, :uneven_columns_across, 5)
     end
   end
 end

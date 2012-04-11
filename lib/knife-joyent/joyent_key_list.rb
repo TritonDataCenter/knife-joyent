@@ -18,7 +18,7 @@ module KnifeJoyent
         keys << k.key[0..32] + '...'
       end
 
-      puts ui.list(keys, :columns_across, 2)
+      puts ui.list(keys, :uneven_columns_across, 2)
 
     end
   end

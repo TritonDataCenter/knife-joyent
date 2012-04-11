@@ -31,7 +31,7 @@ module KnifeJoyent
         servers << s.disk.to_s
       end
 
-      puts ui.list(servers, :columns_across, 8)
+      puts ui.list(servers, :uneven_columns_across, 8)
     end
   end
 end
