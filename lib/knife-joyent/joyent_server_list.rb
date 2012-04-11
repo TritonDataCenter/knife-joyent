@@ -14,21 +14,31 @@ module KnifeJoyent
         ui.color('Name', :bold),
         ui.color('State', :bold),
         ui.color('Type', :bold),
-        ui.color('Dataset', :bold),
+        ui.color('Image', :bold),
         ui.color('IPs', :bold),
-        ui.color('Memory', :bold),
+        ui.color('RAM', :bold),
         ui.color('Disk', :bold),
       ]
 
       self.connection.servers.sort_by(&:name).each do |s|
         servers << s.id.to_s
         servers << s.name
-        servers << s.state
+
+        servers << case s.state
+        when 'running'
+          ui.color(s.state, :green)
+        when 'stopping'
+        when 'provisioning'
+          ui.color(s.state, :yellow)
+        when 'stopped'
+          ui.color(s.state, :red)
+        end
+
         servers << s.type
         servers << s.dataset
         servers << s.ips.join(" ")
-        servers << s.memory.to_s
-        servers << s.disk.to_s
+        servers << "#{s.memory/1024} GB".to_s
+        servers << "#{s.disk/1024} GB".to_s
       end
 
       puts ui.list(servers, :uneven_columns_across, 8)
