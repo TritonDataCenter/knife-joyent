@@ -1,7 +1,7 @@
 Knife Joyent
 ===
 
-This is a Knife plugin for Joyent CloudAPI. This plugin gives knife
+This is a [Knife](http://wiki.opscode.com/display/chef/Knife) plugin for Joyent CloudAPI. This plugin gives knife
 the ability to create, bootstrap, and manage servers on the [Joyent Public Cloud](http://www.joyentcloud.com/) as well as Cloud providers powered by Joyent's [SmartDataCenter](http://www.joyent.com/products/smartdatacenter/) product offering.
 
 For more information on Joyent CloudAPI, see: [CloudAPI Documentation](api.joyentcloud.com/docs)
@@ -44,7 +44,7 @@ Currently available commands:
 The following options can be specified in your knife configuration file
 ``knife.rb``
 
-### Required
+#### Required
 
 You can authenticate against CloudAPI using either:
 
@@ -59,7 +59,7 @@ or, your ssh key
     knife[:joyent_keyname] = "Name of key stored on Joyent"
     knife[:joyent_keyfile] = "/path/to/your/private/key"
 
-### Optional
+#### Optional
 
 **joyent_api_url**
 
