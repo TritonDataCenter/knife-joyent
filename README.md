@@ -34,6 +34,7 @@ Currently available commands:
     knife joyent snapshot create <server> <snapshot_name>
     knife joyent snapshot delete <server> <snapshot_name>
     knife joyent snapshot list <server_id>
+    knife joyent tag create <server_id> <tag> <value>
     knife joyent tag delete <server_id> <tag>
     knife joyent tag delete <server_id> -A
     knife joyent tag list <server>
