@@ -2,3 +2,4 @@ pkg
 .config
 .bundle
 Gemfile.lock
+.DS_Store
