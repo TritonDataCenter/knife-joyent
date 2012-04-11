@@ -2,12 +2,13 @@ Knife Joyent
 ===
 
 This is a Knife plugin for Joyent CloudAPI. This plugin gives knife
-the ability to create, bootstrap, and manage servers on the Joyent Public Cloud
-as well as Cloud providers powered by Joyent's SmartDataCenter product.
+the ability to create, bootstrap, and manage servers on the [Joyent Public Cloud](http://www.joyentcloud.com/) as well as Cloud providers powered by Joyent's [SmartDataCenter](http://www.joyent.com/products/smartdatacenter/) product offering.
+
+For more information on Joyent CloudAPI, see: [CloudAPI Documentation](api.joyentcloud.com/docs)
 
 ## Installation
 
-With chef already installed (> 0.10.0):
+With chef already installed ``(> 0.10.0)``:
 
     gem install knife-joyent
 
@@ -57,10 +58,12 @@ or, your ssh key
 
 ### Optional
 
-    # Specify a custom API endpoint, this is required if you want to specify 
-    # where you want to provision your machines, or if you are using knife with a
-    # provider powered by SmartDataCenter.
-    #
+**joyent_api_url**
+
+Specify a custom API endpoint, this is required if you want to specify 
+where you want to provision your machines, or if you are using knife with a
+provider powered by [SmartDataCenter](http://www.joyent.com/products/smartdatacenter/).
+    
     # Defaults to https://us-west-1.api.joyentcloud.com/
     knife[:joyent_api_url] = "https://us-sw-1.api.joyentcloud.com/"
 
