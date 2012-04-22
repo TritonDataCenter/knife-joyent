@@ -21,7 +21,7 @@ module KnifeJoyent
       if s = self.connection.servers.create(:dataset => config[:dataset],
                                             :package => config[:package],
                                             :name => config[:name])
-        puts ui.color("Created machine: #{s.uuid}", :cyan)
+        puts ui.color("Created machine: #{s.id}", :cyan)
         exit 0
       end
     rescue => e
@@ -30,7 +30,7 @@ module KnifeJoyent
         puts ui.error(error['message'])
         exit 1
       else
-        puts ui.error('Unexpected Error Occured:' + e.message)
+        raise
       end
     end
 
