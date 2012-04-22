@@ -16,19 +16,29 @@ module KnifeJoyent
           :short => '-U USERNAME',
           :long => '--joyent-username USERNAME',
           :description => 'Your Joyent username',
-          :proc => Proc.new {|key| Chef::Config[:knife][:joyent_username]}
+          :proc => Proc.new {|key| Chef::Config[:knife][:joyent_username] = key}
 
         option :joyent_password,
           :short => '-P PASSWORD',
           :long => '--joyent-password PASSOWRD',
           :description => 'Your Joyent password',
-          :proc => Proc.new {|key| Chef::Config[:knife][:joyent_password]}
+          :proc => Proc.new {|key| Chef::Config[:knife][:joyent_password] = key }
+
+        option :joyent_keyname,
+          :long => '--joyent-keyname name of ssh key for signature auth',
+          :description => 'name of ssh key for signature auth',
+          :proc => Proc.new {|key| Chef::Config[:knife][:joyent_keyname] = key }
+
+        option :joyent_keyfile,
+          :long => '--joyent-keyfile path to ssh private key for signature auth',
+          :description => 'path to ssh private key for signature auth',
+          :proc => Proc.new {|key| Chef::Config[:knife][:joyent_keyfile] = key }
 
         option :joyent_url,
           :short => "-L JOYENT_API_URL",
           :long => "--joyent-api-url JOYENT_API_URL",
           :description => "Joyent API URL",
-          :proc => Proc.new {|key| Chef::Config[:knife][:joyent_url]}
+          :proc => Proc.new {|key| Chef::Config[:knife][:joyent_url] = key }
       end
 
       def connection
@@ -37,6 +47,8 @@ module KnifeJoyent
                             :provider => 'Joyent',
                             :joyent_username => Chef::Config[:knife][:joyent_username],
                             :joyent_password => Chef::Config[:knife][:joyent_password],
+                            :joyent_keyname => Chef::Config[:knife][:joyent_keyname],
+                            :joyent_keyfile => Chef::Config[:knife][:joyent_keyfile],
                             :joyent_url => Chef::Config[:knife][:joyent_url]
                           )
                         end
