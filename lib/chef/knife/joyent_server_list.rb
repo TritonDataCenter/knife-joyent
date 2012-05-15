@@ -20,7 +20,9 @@ module KnifeJoyent
         ui.color('Disk', :bold),
       ]
 
-      self.connection.servers.sort_by(&:name).each do |s|
+      self.connection.servers.sort do |a, b|
+        (a.name || '') <=> (b.name || '')
+      end.each do |s|
         servers << s.id.to_s
         servers << s.name
 
