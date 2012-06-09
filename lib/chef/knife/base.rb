@@ -34,11 +34,11 @@ module KnifeJoyent
           :description => 'path to ssh private key for signature auth',
           :proc => Proc.new {|key| Chef::Config[:knife][:joyent_keyfile] = key }
 
-        option :joyent_url,
+        option :joyent_api_url,
           :short => "-L JOYENT_API_URL",
           :long => "--joyent-api-url JOYENT_API_URL",
           :description => "Joyent API URL",
-          :proc => Proc.new {|key| Chef::Config[:knife][:joyent_url] = key }
+          :proc => Proc.new {|key| Chef::Config[:knife][:joyent_api_url] = key }
       end
 
       def connection
@@ -49,7 +49,7 @@ module KnifeJoyent
                             :joyent_password => Chef::Config[:knife][:joyent_password],
                             :joyent_keyname => Chef::Config[:knife][:joyent_keyname],
                             :joyent_keyfile => Chef::Config[:knife][:joyent_keyfile],
-                            :joyent_url => Chef::Config[:knife][:joyent_url]
+                            :joyent_url => Chef::Config[:knife][:joyent_api_url]
                           )
                         end
       end
