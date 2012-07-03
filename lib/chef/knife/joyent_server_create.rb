@@ -68,7 +68,7 @@ module KnifeJoyent
       :short => "-E Environment",
       :long => "--environment ENVIRONMENT",
       :description => "Assign an environment to Chef Node",
-      :proc => Proc.new { |e| Chef::Config[:environment] = e },
+      :proc => Proc.new { |e| Chef::Config[:knife][:environment] = e },
       :default => "_default"
 
     option :no_host_key_verify,
