@@ -4,13 +4,11 @@ module KnifeJoyent
     include KnifeJoyent::Base
 
     deps do
-      require 'chef/knife/bootstrap'
-      Chef::Knife::Bootstrap.load_deps
       require 'fog'
-      require 'socket'
-      require 'net/ssh/multi'
       require 'readline'
       require 'chef/json_compat'
+      require 'chef/knife/bootstrap'
+      Chef::Knife::Bootstrap.load_deps
     end
     
     banner 'knife joyent server create (options)'
@@ -63,15 +61,7 @@ module KnifeJoyent
       :description => "Bootstrap a distro using a template",
       :proc => Proc.new { |d| Chef::Config[:knife][:distro] = d },
       :default => "chef-full"
-    
-    # option :environment,
-    #   :short => "-E Environment",
-    #   :long => "--environment ENVIRONMENT",
-    #   :description => "Assign an environment to Chef Node",
-    #   # :proc => Proc.new { |e| Chef::Config[:knife][:environment] = e },
-    #   :default => "_default"
-    #   :default => 'dev'
-
+      
     option :no_host_key_verify,
       :long => "--no-host-key-verify",
       :description => "Disable host key verification",
@@ -133,10 +123,12 @@ module KnifeJoyent
 
     # Go
     def run
+      puts ui.color("Creating machine #{config[:chef_node_name]}", :cyan)
       begin
         server = self.connection.servers.create(:dataset => config[:dataset],
                                             :package => config[:package],
                                             :name => config[:name])
+      server.wait_for { print "."; ready? }                                      
       rescue => e
         Chef::Log.debug("e: #{e}")
         if e.response && e.response.body.kind_of?(String)
