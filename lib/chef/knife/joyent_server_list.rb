@@ -29,11 +29,12 @@ module KnifeJoyent
         servers << case s.state
         when 'running'
           ui.color(s.state, :green)
-        when 'stopping'
-        when 'provisioning'
+        when 'stopping', 'provisioning'
           ui.color(s.state, :yellow)
         when 'stopped'
           ui.color(s.state, :red)
+        else
+          ui.color('unknown', :red)
         end
 
         servers << s.type
