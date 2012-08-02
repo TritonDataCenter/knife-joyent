@@ -157,7 +157,7 @@ module KnifeJoyent
       exit 0
     end
     
-    def msg(label, value)
+    def msg(label, value = nil)
       if value && !value.empty?
         puts "#{ui.color(label, :cyan)}: #{value}"
       end
