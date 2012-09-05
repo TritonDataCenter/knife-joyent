@@ -70,6 +70,12 @@ provider powered by [SmartDataCenter](http://www.joyent.com/products/smartdatace
     # Defaults to https://us-west-1.api.joyentcloud.com/
     knife[:joyent_api_url] = "https://us-sw-1.api.joyentcloud.com/"
 
+## Contributors
+
+[Sean Omera](https://github.com/someara) - Opscode
+[Eric Saxby](https://github.com/sax) - ModCloth
+[Stephen Lauck](https://github.com/stephenlauck) - ModCloth
+
 ## License
 
 Copyright 2012 Joyent, Inc
