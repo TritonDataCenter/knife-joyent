@@ -4,7 +4,7 @@ Knife Joyent
 This is a [Knife](http://wiki.opscode.com/display/chef/Knife) plugin for Joyent CloudAPI. This plugin gives knife
 the ability to create, bootstrap, and manage servers on the [Joyent Public Cloud](http://www.joyentcloud.com/) as well as Cloud providers powered by Joyent's [SmartDataCenter](http://www.joyent.com/products/smartdatacenter/) product offering.
 
-For more information on Joyent CloudAPI, see: [CloudAPI Documentation](api.joyentcloud.com/docs)
+For more information on Joyent CloudAPI, see: [CloudAPI Documentation](http://api.joyentcloud.com/docs)
 
 ## Installation
 
