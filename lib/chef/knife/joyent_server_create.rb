@@ -99,8 +99,8 @@ module KnifeJoyent
     # Run Chef bootstrap script
     def bootstrap_for_node(server)
       bootstrap = Chef::Knife::Bootstrap.new
-      Chef::Log.debug("Bootstrap name_args = [ #{server.ips.last} ]")
-      bootstrap.name_args = [ server.ips.last ]
+      Chef::Log.debug("Bootstrap name_args = [ #{server.ips.first} ]")
+      bootstrap.name_args = [ server.ips.first ]
       Chef::Log.debug("Bootstrap run_list = #{config[:run_list]}")
       bootstrap.config[:run_list] = config[:run_list]
       Chef::Log.debug("Bootstrap ssh_user = #{config[:ssh_user]}")
@@ -149,9 +149,9 @@ module KnifeJoyent
       msg("Type", server.type)
       msg("Dataset", server.dataset)
       msg("IP's", server.ips)
-      puts ui.color("attempting to bootstrap on #{server.ips.last}", :cyan)
+      puts ui.color("attempting to bootstrap on #{server.ips.first}", :cyan)
     
-      print(".") until tcp_test_ssh(server.ips.last) {
+      print(".") until tcp_test_ssh(server.ips.first) {
         sleep 1
         puts("done")
       }
