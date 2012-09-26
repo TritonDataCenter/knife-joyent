@@ -72,9 +72,9 @@ provider powered by [SmartDataCenter](http://www.joyent.com/products/smartdatace
 
 ## Contributors
 
-[Sean Omera](https://github.com/someara) - Opscode
-[Eric Saxby](https://github.com/sax) - ModCloth
-[Stephen Lauck](https://github.com/stephenlauck) - ModCloth
+ - [Sean Omera](https://github.com/someara) - Opscode
+ - [Eric Saxby](https://github.com/sax) - ModCloth
+ - [Stephen Lauck](https://github.com/stephenlauck) - ModCloth
 
 ## License
 
