@@ -10,6 +10,7 @@ module KnifeJoyent
       require 'readline'
       require 'chef/json_compat'
       require 'chef/knife/bootstrap'
+      require 'ipaddr'
       Chef::Knife::Bootstrap.load_deps
     end
     
@@ -69,6 +70,23 @@ module KnifeJoyent
       :description => "Disable host key verification",
       :boolean => true,
       :default => false
+
+    def is_linklocal(ip)
+      linklocal = IPAddr.new "169.254.0.0/16"
+      return linklocal.include?(ip)
+    end
+    
+    def is_loopback(ip)
+      loopback = IPAddr.new "127.0.0.0/8"
+      return loopback.include?(ip)
+    end
+    
+    def is_private(ip)
+      block_a = IPAddr.new "10.0.0.0/8"
+      block_b = IPAddr.new "172.16.0.0/12"
+      block_c = IPAddr.new "192.168.0.0/16"
+      return (block_a.include?(ip) or block_b.include?(ip) or block_c.include?(ip))
+    end
 
     # wait for ssh to come up
     def tcp_test_ssh(hostname)
@@ -149,9 +167,10 @@ module KnifeJoyent
       msg("Type", server.type)
       msg("Dataset", server.dataset)
       msg("IP's", server.ips)
-      puts ui.color("attempting to bootstrap on #{server.ips.first}", :cyan)
+      pubip = server.ips.find{|ip| ip and not (is_loopback(ip) or is_private(ip) or is_linklocal(ip))}
+      puts ui.color("attempting to bootstrap on #{pubip}", :cyan)
     
-      print(".") until tcp_test_ssh(server.ips.first) {
+      print(".") until tcp_test_ssh(pubip) {
         sleep 1
         puts("done")
       }
