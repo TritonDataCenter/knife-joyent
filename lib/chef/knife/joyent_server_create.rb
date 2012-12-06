@@ -161,12 +161,12 @@ module KnifeJoyent
       end
       
       puts ui.color("Created machine:", :cyan)
-      msg("ID", server.id.to_s)
-      msg("Name", server.name)
-      msg("State", server.state)
-      msg("Type", server.type)
-      msg("Dataset", server.dataset)
-      msg("IP's", server.ips)
+      msg_pair("ID", server.id.to_s)
+      msg_pair("Name", server.name)
+      msg_pair("State", server.state)
+      msg_pair("Type", server.type)
+      msg_pair("Dataset", server.dataset)
+      msg_pair("IP's", server.ips)
       pubip = server.ips.find{|ip| ip and not (is_loopback(ip) or is_private(ip) or is_linklocal(ip))}
       puts ui.color("attempting to bootstrap on #{pubip}", :cyan)
     
@@ -178,7 +178,7 @@ module KnifeJoyent
       exit 0
     end
     
-    def msg(label, value = nil)
+    def msg_pair(label, value = nil)
       if value && !value.empty?
         puts "#{ui.color(label, :cyan)}: #{value}"
       end
