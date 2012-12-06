@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-$:.unshift File.expand_path("../lib", __FILE__)
+$:.push File.expand_path("../lib", __FILE__)
 require 'knife-joyent/version'
 
 Gem::Specification.new do |s|
