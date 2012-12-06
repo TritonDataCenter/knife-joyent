@@ -43,15 +43,21 @@ module KnifeJoyent
 
       def connection
         @connection ||= begin
-                          connection = Fog::Compute.new(
-                            :provider => 'Joyent',
-                            :joyent_username => Chef::Config[:knife][:joyent_username],
-                            :joyent_password => Chef::Config[:knife][:joyent_password],
-                            :joyent_keyname => Chef::Config[:knife][:joyent_keyname],
-                            :joyent_keyfile => Chef::Config[:knife][:joyent_keyfile],
-                            :joyent_url => Chef::Config[:knife][:joyent_api_url]
-                          )
-                        end
+          connection = Fog::Compute.new(
+            :provider => 'Joyent',
+            :joyent_username => Chef::Config[:knife][:joyent_username],
+            :joyent_password => Chef::Config[:knife][:joyent_password],
+            :joyent_keyname => Chef::Config[:knife][:joyent_keyname],
+            :joyent_keyfile => Chef::Config[:knife][:joyent_keyfile],
+            :joyent_url => Chef::Config[:knife][:joyent_api_url]
+          )
+        end
+      end
+
+      def msg_pair(label, value, color=:cyan)
+        if value && !value.to_s.empty?
+          puts "#{ui.color(label, color)}: #{value}"
+        end
       end
     end
   end
