@@ -1,43 +1,44 @@
-require File.expand_path(File.dirname(__FILE__) + '/base')
+require 'chef/knife/joyent_base'
 
+class Chef
+  class Knife
+    class JoyentServerResize < Knife
 
-module KnifeJoyent
-  class JoyentServerResize < Chef::Knife
+      include Knife::JoyentBase
 
-    include KnifeJoyent::Base
+      banner 'knife joyent server resize <server_id> -f <flavor>'
 
-    banner 'knife joyent server resize <server_id> -f <flavor>'
+      option :flavor,
+        :short => "-f <flavor>",
+        :long => "--flavor <flavor>",
+        :description => "name of flavor/package to resize to"
 
-    option :flavor,
-      :short => "-f <flavor>",
-      :long => "--flavor <flavor>",
-      :description => "name of flavor/package to resize to"
+      def run
+        unless config[:flavor]
+          show_usage
+          exit 1
+        end
 
-    def run
-      unless config[:flavor]
-        show_usage
-        exit 1
-      end
+        unless name_args.size === 1
+          show_usage
+          exit 1
+        end
 
-      unless name_args.size === 1
-        show_usage
-        exit 1
-      end
+        id = name_args.first
 
-      id = name_args.first
+        server = self.connection.servers.get(id)
+        unless server
+          puts ui.error("Server with id: #{id} not found")
+          exit 1
+        end
 
-      server = self.connection.servers.get(id)
-      unless server
-        puts ui.error("Server with id: #{id} not found")
-        exit 1
-      end
-
-      if self.connection.resize_machine(id, config[:flavor])
-        puts ui.color("Resized server #{id}", :cyan)
-        exit 0
-      else
-        puts ui.error("Resize server failed")
-        exit 1
+        if self.connection.resize_machine(id, config[:flavor])
+          puts ui.color("Resized server #{id}", :cyan)
+          exit 0
+        else
+          puts ui.error("Resize server failed")
+          exit 1
+        end
       end
     end
   end
