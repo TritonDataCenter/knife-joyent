@@ -14,22 +14,33 @@ module KnifeJoyent
       Chef::Knife::Bootstrap.load_deps
     end
     
-    banner 'knife joyent server create (options)'
+    banner "knife joyent server create (options)"
 
-    # mixlib option parsing
-    option :name,
-      :long => '--name <name>',
-      :description => 'name for this machine'
+    option :server_name,
+      :short => "-S NAME",
+      :long => "--server-name <name>",
+      :description => "The Joyent server name"
+
+    option :chef_node_name,
+      :short => "-N NAME",
+      :long => "--node-name NAME",
+      :description => "The Chef node name for your new node"
 
     option :package,
-      :short => '-f FLAVOR_NAME',
-      :long => '--flavor FLAVOR_NAME',
-      :description => 'specify flavor/package for the server'
+      :short => "-f FLAVOR_NAME",
+      :long => "--flavor FLAVOR_NAME",
+      :description => "specify flavor/package for the server"
 
     option :dataset,
-      :short => '-I IMAGE_ID',
-      :long => '--image IMAGE_ID',
-      :description => 'specify image for the server'
+      :short => "-I IMAGE_ID",
+      :long => "--image IMAGE_ID",
+      :description => "specify image for the server"
+
+    option :private_network,
+      :long => "--private-network",
+      :description => "Use the private IP for bootstrapping rather than the public IP",
+      :boolean => true,
+      :default => false
 
     option :run_list,
       :short => "-r RUN_LIST",
@@ -49,11 +60,6 @@ module KnifeJoyent
       :long => "--identity-file IDENTITY_FILE",
       :description => "The SSH identity file used for authentication"
 
-    option :chef_node_name,
-      :short => "-N NAME",
-      :long => "--node-name NAME",
-      :description => "The Chef node name for your new node"
-
     option :prerelease,
       :long => "--prerelease",
       :description => "Install the pre-release chef gems"
@@ -70,6 +76,7 @@ module KnifeJoyent
       :description => "Disable host key verification",
       :boolean => true,
       :default => false
+
 
     def is_linklocal(ip)
       linklocal = IPAddr.new "169.254.0.0/16"
@@ -113,12 +120,64 @@ module KnifeJoyent
       tcp_socket && tcp_socket.close
     end
 
+    def run
+      $stdout.sync = true
+
+      # add some validation here ala knife-ec2
+
+      node_name = config[:chef_node_name] || config[:server_name]
+
+      puts ui.color("Creating machine #{node_name}", :cyan)
+
+      server = connection.servers.create(
+        :name => node_name,
+        :dataset => config[:dataset],
+        :package => config[:package]
+        )
+
+      print "\n#{ui.color("Waiting for server", :magenta)}"
+      server.wait_for { print "."; ready? }
+
+       #which IP address to bootstrap
+      bootstrap_ip_addresses = server.ips.select{|ip| ip and not (is_loopback(ip) or is_linklocal(ip))}
+      if bootstrap_ip_addresses.count == 1
+        bootstrap_ip_address = bootstrap_ip_addresses.first
+      else
+        if config[:private_network]
+          bootstrap_ip_address = bootstrap_ip_addresses.find{|ip| is_private(ip)}
+        else
+          bootstrap_ip_address = bootstrap_ip_addresses.find{|ip| not is_private(ip)}
+        end
+      end
+      Chef::Log.debug("Bootstrap IP Address #{bootstrap_ip_address}")
+      if bootstrap_ip_address.nil?
+        ui.error("No IP address available for bootstrapping.")
+        exit 1
+      end
+
+      puts ui.color("attempting to bootstrap on #{bootstrap_ip_address}", :cyan)
+
+      print(".") until tcp_test_ssh(bootstrap_ip_address) {
+        sleep @initial_sleep_delay ||= 10
+        puts("done")
+      }
+
+      bootstrap_for_node(server, bootstrap_ip_address).run
+
+      puts ui.color("Created machine:", :cyan)
+      msg_pair("ID", server.id.to_s)
+      msg_pair("Name", server.name)
+      msg_pair("State", server.state)
+      msg_pair("Type", server.type)
+      msg_pair("Dataset", server.dataset)
+      msg_pair("IP's", server.ips)
+    end
 
     # Run Chef bootstrap script
-    def bootstrap_for_node(server)
+    def bootstrap_for_node(server, bootstrap_ip_address)
       bootstrap = Chef::Knife::Bootstrap.new
-      Chef::Log.debug("Bootstrap name_args = [ #{server.ips.first} ]")
-      bootstrap.name_args = [ server.ips.first ]
+      Chef::Log.debug("Bootstrap name_args = [ #{bootstrap_ip_address} ]")
+      bootstrap.name_args = [ bootstrap_ip_address ]
       Chef::Log.debug("Bootstrap run_list = #{config[:run_list]}")
       bootstrap.config[:run_list] = config[:run_list]
       Chef::Log.debug("Bootstrap ssh_user = #{config[:ssh_user]}")
@@ -139,43 +198,6 @@ module KnifeJoyent
       bootstrap.config[:no_host_key_verify] = config[:no_host_key_verify]
 
       bootstrap
-    end
-
-    # Go
-    def run
-      puts ui.color("Creating machine #{config[:chef_node_name]}", :cyan)
-      begin
-        server = self.connection.servers.create(:dataset => config[:dataset],
-                                            :package => config[:package],
-                                            :name => config[:name])
-      server.wait_for { print "."; ready? }                                      
-      rescue => e
-        Chef::Log.debug("e: #{e}")
-        if e.response && e.response.body.kind_of?(String)
-          error = MultiJson.decode(e.response.body)
-          puts ui.error(error['message'])
-          exit 1
-        else
-          raise
-        end
-      end
-      
-      puts ui.color("Created machine:", :cyan)
-      msg("ID", server.id.to_s)
-      msg("Name", server.name)
-      msg("State", server.state)
-      msg("Type", server.type)
-      msg("Dataset", server.dataset)
-      msg("IP's", server.ips)
-      pubip = server.ips.find{|ip| ip and not (is_loopback(ip) or is_private(ip) or is_linklocal(ip))}
-      puts ui.color("attempting to bootstrap on #{pubip}", :cyan)
-    
-      print(".") until tcp_test_ssh(pubip) {
-        sleep 1
-        puts("done")
-      }
-      bootstrap_for_node(server).run
-      exit 0
     end
     
     def msg(label, value = nil)
