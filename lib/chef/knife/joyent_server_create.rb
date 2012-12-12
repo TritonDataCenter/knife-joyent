@@ -165,35 +165,38 @@ module KnifeJoyent
           raise
         end
       end
-      
+
       puts ui.color("Created machine:", :cyan)
-      msg("ID", server.id.to_s)
-      msg("Name", server.name)
-      msg("State", server.state)
-      msg("Type", server.type)
-      msg("Dataset", server.dataset)
-      msg("IP's", server.ips)
+      msg_pair("ID", server.id.to_s)
+      msg_pair("Name", server.name)
+      msg_pair("State", server.state)
+      msg_pair("Type", server.type)
+      msg_pair("Dataset", server.dataset)
+      msg_pair("IP's", server.ips)
+      pubip = server.ips.find{|ip| ip and not (is_loopback(ip) or is_private(ip) or is_linklocal(ip))}
+      puts ui.color("attempting to bootstrap on #{pubip}", :cyan)
 
       # pubip = server.ips.find{|ip| ip and not (is_loopback(ip) or is_private(ip) or is_linklocal(ip))}
 
       bootstrap_ip_addresses = server.ips.select{|ip| ip and not (is_loopback(ip) or is_linklocal(ip))}
-        if bootstrap_ip_addresses.count == 1
-          bootstrap_ip_address = bootstrap_ip_addresses.first
+
+      if bootstrap_ip_addresses.count == 1
+        bootstrap_ip_address = bootstrap_ip_addresses.first
+      else
+        if config[:private_network]
+          bootstrap_ip_address = bootstrap_ip_addresses.find{|ip| is_private(ip)}
         else
-          if config[:private_network]
-            bootstrap_ip_address = bootstrap_ip_addresses.find{|ip| is_private(ip)}
-          else
-            bootstrap_ip_address = bootstrap_ip_addresses.find{|ip| not is_private(ip)}
-          end
+          bootstrap_ip_address = bootstrap_ip_addresses.find{|ip| not is_private(ip)}
         end
-        Chef::Log.debug("Bootstrap IP Address #{bootstrap_ip_address}")
-        if bootstrap_ip_address.nil?
-          ui.error("No IP address available for bootstrapping.")
-          exit 1
-        end
+      end
+      Chef::Log.debug("Bootstrap IP Address #{bootstrap_ip_address}")
+      if bootstrap_ip_address.nil?
+        ui.error("No IP address available for bootstrapping.")
+        exit 1
+      end
 
       puts ui.color("attempting to bootstrap on #{bootstrap_ip_address}", :cyan)
-    
+
       print(".") until tcp_test_ssh(bootstrap_ip_address) {
         sleep 1
         puts("done")
@@ -202,7 +205,7 @@ module KnifeJoyent
       exit 0
     end
     
-    def msg(label, value = nil)
+    def msg_pair(label, value = nil)
       if value && !value.empty?
         puts "#{ui.color(label, :cyan)}: #{value}"
       end
