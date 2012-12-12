@@ -1,9 +1,10 @@
-require File.expand_path(File.dirname(__FILE__) + '/base')
+require 'chef/knife/joyent_base'
 
-module KnifeJoyent
-  class JoyentSnapshotCreate < Chef::Knife
+class Chef
+  class Knife
+  class JoyentSnapshotCreate < Knife
 
-    include KnifeJoyent::Base
+    include Knife::JoyentBase
 
     banner 'knife joyent snapshot create <server> <snapshot_name>'
 
@@ -25,19 +26,19 @@ module KnifeJoyent
         :created => snapshot.created
       })
       exit 0
-    rescue Excon::Errors::Conflict => e
-      if e.response && e.response.body.kind_of?(String)
-        error = MultiJson.decode(e.response.body)
-        puts ui.error(error['message'])
-        exit 1
-      else
-        puts ui.error(e.message)
+      rescue Excon::Errors::Conflict => e
+        if e.response && e.response.body.kind_of?(String)
+          error = MultiJson.decode(e.response.body)
+          puts ui.error(error['message'])
+          exit 1
+        else
+          puts ui.error(e.message)
+          exit 1
+        end
+      rescue => e
+        puts ui.error('Unexpected Error Occured:' + e.message)
         exit 1
       end
-    rescue => e
-      puts ui.error('Unexpected Error Occured:' + e.message)
-      exit 1
     end
-
   end
 end
