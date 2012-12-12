@@ -38,6 +38,12 @@ module KnifeJoyent
       :proc => lambda { |o| o.split(/[\s,]+/) },
       :default => []
 
+    option :private_network,
+      :long => "--private-network",
+      :description => "Use the private IP for bootstrapping rather than the public IP",
+      :boolean => true,
+      :default => false
+
     option :ssh_user,
       :short => "-x USERNAME",
       :long => "--ssh-user USERNAME",
@@ -115,10 +121,10 @@ module KnifeJoyent
 
 
     # Run Chef bootstrap script
-    def bootstrap_for_node(server)
+    def bootstrap_for_node(server, bootstrap_ip_address)
       bootstrap = Chef::Knife::Bootstrap.new
-      Chef::Log.debug("Bootstrap name_args = [ #{server.ips.first} ]")
-      bootstrap.name_args = [ server.ips.first ]
+      Chef::Log.debug("Bootstrap name_args = [ #{bootstrap_ip_address} ]")
+      bootstrap.name_args = [ bootstrap_ip_address ]
       Chef::Log.debug("Bootstrap run_list = #{config[:run_list]}")
       bootstrap.config[:run_list] = config[:run_list]
       Chef::Log.debug("Bootstrap ssh_user = #{config[:ssh_user]}")
@@ -167,14 +173,32 @@ module KnifeJoyent
       msg("Type", server.type)
       msg("Dataset", server.dataset)
       msg("IP's", server.ips)
-      pubip = server.ips.find{|ip| ip and not (is_loopback(ip) or is_private(ip) or is_linklocal(ip))}
-      puts ui.color("attempting to bootstrap on #{pubip}", :cyan)
+
+      # pubip = server.ips.find{|ip| ip and not (is_loopback(ip) or is_private(ip) or is_linklocal(ip))}
+
+      bootstrap_ip_addresses = server.ips.select{|ip| ip and not (is_loopback(ip) or is_linklocal(ip))}
+        if bootstrap_ip_addresses.count == 1
+          bootstrap_ip_address = bootstrap_ip_addresses.first
+        else
+          if config[:private_network]
+            bootstrap_ip_address = bootstrap_ip_addresses.find{|ip| is_private(ip)}
+          else
+            bootstrap_ip_address = bootstrap_ip_addresses.find{|ip| not is_private(ip)}
+          end
+        end
+        Chef::Log.debug("Bootstrap IP Address #{bootstrap_ip_address}")
+        if bootstrap_ip_address.nil?
+          ui.error("No IP address available for bootstrapping.")
+          exit 1
+        end
+
+      puts ui.color("attempting to bootstrap on #{bootstrap_ip_address}", :cyan)
     
-      print(".") until tcp_test_ssh(pubip) {
+      print(".") until tcp_test_ssh(bootstrap_ip_address) {
         sleep 1
         puts("done")
       }
-      bootstrap_for_node(server).run
+      bootstrap_for_node(server, bootstrap_ip_address).run
       exit 0
     end
     
