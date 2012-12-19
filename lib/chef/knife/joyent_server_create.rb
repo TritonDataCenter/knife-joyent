@@ -206,6 +206,20 @@ class Chef
           puts("done")
         }
 
+        # tag with provisioner via knife $USER
+        tagkey = 'provisioner'
+        tagvalue = Chef::Config[:knife][:local_user]
+        tags = [
+          ui.color('Name', :bold),
+         ui.color('Value', :bold),
+        ]
+        server.add_tags({tagkey => tagvalue}).each do |k, v|
+          tags << k
+          tags << v
+        end
+        puts ui.color("Updated tags for #{node_name}", :cyan)
+        puts ui.list(tags, :uneven_columns_across, 2)
+
         bootstrap_for_node(server, bootstrap_ip_address).run
 
         puts ui.color("Created machine:", :cyan)
@@ -215,33 +229,6 @@ class Chef
         msg_pair("Type", server.type)
         msg_pair("Dataset", server.dataset)
         msg_pair("IP's", server.ips)
-      end
-
-      # Run Chef bootstrap script
-      def bootstrap_for_node(server, bootstrap_ip_address)
-        bootstrap = Chef::Knife::Bootstrap.new
-        Chef::Log.debug("Bootstrap name_args = [ #{bootstrap_ip_address} ]")
-        bootstrap.name_args = [ bootstrap_ip_address ]
-        Chef::Log.debug("Bootstrap run_list = #{config[:run_list]}")
-        bootstrap.config[:run_list] = config[:run_list]
-        Chef::Log.debug("Bootstrap ssh_user = #{config[:ssh_user]}")
-        bootstrap.config[:ssh_user] = config[:ssh_user]
-        Chef::Log.debug("Bootstrap identity_file = #{config[:identity_file]}")
-        bootstrap.config[:identity_file] = config[:identity_file]
-        Chef::Log.debug("Bootstrap chef_node_name = #{config[:chef_node_name]}")
-        bootstrap.config[:chef_node_name] = config[:chef_node_name] || server.id
-        Chef::Log.debug("Bootstrap prerelease = #{config[:prerelease]}")
-        bootstrap.config[:prerelease] = config[:prerelease]
-        Chef::Log.debug("Bootstrap distro = #{config[:distro]}")
-        bootstrap.config[:distro] = config[:distro]
-        #Chef::Log.debug("Bootstrap use_sudo = #{config[:use_sudo]}")
-        #bootstrap.config[:use_sudo] = true
-        Chef::Log.debug("Bootstrap environment = #{config[:environment]}")
-        bootstrap.config[:environment] = config[:environment]
-        Chef::Log.debug("Bootstrap no_host_key_verify = #{config[:no_host_key_verify]}")
-        bootstrap.config[:no_host_key_verify] = config[:no_host_key_verify]
-
-        bootstrap
       end
       
       def msg_pair(label, value = nil)
