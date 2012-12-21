@@ -206,19 +206,23 @@ class Chef
           puts("done")
         }
 
-        # tag with provisioner via knife $USER
-        tagkey = 'provisioner'
-        tagvalue = Chef::Config[:knife][:local_user]
-        tags = [
-          ui.color('Name', :bold),
-         ui.color('Value', :bold),
-        ]
-        server.add_tags({tagkey => tagvalue}).each do |k, v|
-          tags << k
-          tags << v
+        if Chef::Config[:knife][:local_user]
+          # tag with provisioner via knife $USER
+          tagkey = 'provisioner'
+          tagvalue = Chef::Config[:knife][:local_user]
+          tags = [
+            ui.color('Name', :bold),
+           ui.color('Value', :bold),
+          ]
+          server.add_tags({tagkey => tagvalue}).each do |k, v|
+            tags << k
+            tags << v
+          end
+          puts ui.color("Updated tags for #{node_name}", :cyan)
+          puts ui.list(tags, :uneven_columns_across, 2)
+        else
+          puts ui.color("No user defined in knife config for provision tagging", :magenta)
         end
-        puts ui.color("Updated tags for #{node_name}", :cyan)
-        puts ui.list(tags, :uneven_columns_across, 2)
 
         bootstrap_for_node(server, bootstrap_ip_address).run
 
