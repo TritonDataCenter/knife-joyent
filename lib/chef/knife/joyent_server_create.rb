@@ -17,23 +17,15 @@ class Chef
 
       banner 'knife joyent server create (options)'
 
+      option :server_name,
+        :short => "-S NAME",
+        :long => "--server-name <name>",
+        :description => "The Joyent server name"
 
-      def is_linklocal(ip)
-        linklocal = IPAddr.new "169.254.0.0/16"
-        return linklocal.include?(ip)
-      end
-
-      def is_loopback(ip)
-        loopback = IPAddr.new "127.0.0.0/8"
-        return loopback.include?(ip)
-      end
-
-      def is_private(ip)
-        block_a = IPAddr.new "10.0.0.0/8"
-        block_b = IPAddr.new "172.16.0.0/12"
-        block_c = IPAddr.new "192.168.0.0/16"
-        return (block_a.include?(ip) or block_b.include?(ip) or block_c.include?(ip))
-      end
+      option :chef_node_name,
+        :short => "-N NAME",
+        :long => "--node-name NAME",
+        :description => "The Chef node name for your new node"
 
       option :package,
         :short => '-f FLAVOR_NAME',
@@ -68,11 +60,6 @@ class Chef
         :short => "-i IDENTITY_FILE",
         :long => "--identity-file IDENTITY_FILE",
         :description => "The SSH identity file used for authentication"
-
-      option :chef_node_name,
-        :short => "-N NAME",
-        :long => "--node-name NAME",
-        :description => "The Chef node name for your new node"
 
       option :prerelease,
         :long => "--prerelease",
@@ -133,33 +120,6 @@ class Chef
         tcp_socket && tcp_socket.close
       end
 
-      # Run Chef bootstrap script
-      def bootstrap_for_node(server, bootstrap_ip_address)
-        bootstrap = Chef::Knife::Bootstrap.new
-        Chef::Log.debug("Bootstrap name_args = [ #{bootstrap_ip_address} ]")
-        bootstrap.name_args = [ bootstrap_ip_address ]
-        Chef::Log.debug("Bootstrap run_list = #{config[:run_list]}")
-        bootstrap.config[:run_list] = config[:run_list]
-        Chef::Log.debug("Bootstrap ssh_user = #{config[:ssh_user]}")
-        bootstrap.config[:ssh_user] = config[:ssh_user]
-        Chef::Log.debug("Bootstrap identity_file = #{config[:identity_file]}")
-        bootstrap.config[:identity_file] = config[:identity_file]
-        Chef::Log.debug("Bootstrap chef_node_name = #{config[:chef_node_name]}")
-        bootstrap.config[:chef_node_name] = config[:chef_node_name] || server.id
-        Chef::Log.debug("Bootstrap prerelease = #{config[:prerelease]}")
-        bootstrap.config[:prerelease] = config[:prerelease]
-        Chef::Log.debug("Bootstrap distro = #{config[:distro]}")
-        bootstrap.config[:distro] = config[:distro]
-        #Chef::Log.debug("Bootstrap use_sudo = #{config[:use_sudo]}")
-        #bootstrap.config[:use_sudo] = true
-        Chef::Log.debug("Bootstrap environment = #{config[:environment]}")
-        bootstrap.config[:environment] = config[:environment]
-        Chef::Log.debug("Bootstrap no_host_key_verify = #{config[:no_host_key_verify]}")
-        bootstrap.config[:no_host_key_verify] = config[:no_host_key_verify]
-
-        bootstrap
-      end
-
       def run
         $stdout.sync = true
 
@@ -179,9 +139,7 @@ class Chef
         server.wait_for { print "."; ready? }
 
         #which IP address to bootstrap
-        bootstrap_ip_addresses = server.ips.select{|ip| 
-          ip and not(is_loopback(ip) or is_linklocal(ip))
-        }
+        bootstrap_ip_addresses = server.ips.select{ |ip| ip and not(is_loopback(ip) or is_linklocal(ip)) }
 
         if bootstrap_ip_addresses.count == 1
           bootstrap_ip_address = bootstrap_ip_addresses.first
@@ -234,11 +192,32 @@ class Chef
         msg_pair("Dataset", server.dataset)
         msg_pair("IP's", server.ips)
       end
-      
-      def msg_pair(label, value = nil)
-        if value && !value.empty?
-          puts "#{ui.color(label, :cyan)}: #{value}"
-        end
+
+      # Run Chef bootstrap script
+      def bootstrap_for_node(server, bootstrap_ip_address)
+        bootstrap = Chef::Knife::Bootstrap.new
+        Chef::Log.debug("Bootstrap name_args = [ #{bootstrap_ip_address} ]")
+        bootstrap.name_args = [ bootstrap_ip_address ]
+        Chef::Log.debug("Bootstrap run_list = #{config[:run_list]}")
+        bootstrap.config[:run_list] = config[:run_list]
+        Chef::Log.debug("Bootstrap ssh_user = #{config[:ssh_user]}")
+        bootstrap.config[:ssh_user] = config[:ssh_user]
+        Chef::Log.debug("Bootstrap identity_file = #{config[:identity_file]}")
+        bootstrap.config[:identity_file] = config[:identity_file]
+        Chef::Log.debug("Bootstrap chef_node_name = #{config[:chef_node_name]}")
+        bootstrap.config[:chef_node_name] = config[:chef_node_name] || server.id
+        Chef::Log.debug("Bootstrap prerelease = #{config[:prerelease]}")
+        bootstrap.config[:prerelease] = config[:prerelease]
+        Chef::Log.debug("Bootstrap distro = #{config[:distro]}")
+        bootstrap.config[:distro] = config[:distro]
+        #Chef::Log.debug("Bootstrap use_sudo = #{config[:use_sudo]}")
+        #bootstrap.config[:use_sudo] = true
+        Chef::Log.debug("Bootstrap environment = #{config[:environment]}")
+        bootstrap.config[:environment] = config[:environment]
+        Chef::Log.debug("Bootstrap no_host_key_verify = #{config[:no_host_key_verify]}")
+        bootstrap.config[:no_host_key_verify] = config[:no_host_key_verify]
+
+        bootstrap
       end
     end
   end
