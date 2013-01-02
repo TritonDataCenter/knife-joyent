@@ -243,12 +243,6 @@ class Chef
 
         bootstrap
       end
-      
-      def msg_pair(label, value = nil)
-        if value && !value.empty?
-          puts "#{ui.color(label, :cyan)}: #{value}"
-        end
-      end
     end
   end
 end
