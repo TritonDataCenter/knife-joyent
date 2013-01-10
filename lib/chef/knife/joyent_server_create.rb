@@ -124,6 +124,11 @@ class Chef
         $stdout.sync = true
 
         # add some validation here ala knife-ec2
+        unless config[:server_name] || config[:chef_node_name]
+          ui.error("You have not provided a valid server or node name.")
+          show_usage
+          exit 1
+        end
 
         node_name = config[:chef_node_name] || config[:server_name]
 
