@@ -43,6 +43,13 @@ class Chef
         :description => "Comma separated list of roles/recipes to apply",
         :proc => lambda { |o| o.split(/[\s,]+/) },
         :default => []
+
+      option :json_attributes,
+        :short => "-j JSON",
+        :long => "--json-attributes JSON",
+        :description => "A JSON string to be added to the first run of chef-client",
+        :proc => lambda { |o| JSON.parse(o) },
+        :default => {}
         
       option :private_network,
         :long => "--private-network",
@@ -173,6 +180,7 @@ class Chef
         msg_pair("Type", server.type)
         msg_pair("Dataset", server.dataset)
         msg_pair("IP's", server.ips)
+        msg_pair("JSON Attributes",config[:json_attributes]) unless config[:json_attributes].empty?
       end
 
       # Run Chef bootstrap script
@@ -198,6 +206,8 @@ class Chef
         bootstrap.config[:environment] = config[:environment]
         Chef::Log.debug("Bootstrap no_host_key_verify = #{config[:no_host_key_verify]}")
         bootstrap.config[:no_host_key_verify] = config[:no_host_key_verify]
+        Chef::Log.debug("Bootstrap json_attributes = #{config[:json_attributes]}")
+        bootstrap.config[:first_boot_attributes] = config[:json_attributes]
 
         bootstrap
       end
