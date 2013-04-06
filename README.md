@@ -31,6 +31,8 @@ Currently available commands:
     knife joyent server resize <server_id> -f <flavor>
     knife joyent server start <server_id>
     knife joyent server stop <server_id>
+    knife joyent server metadata update <server_id> -m <json>
+    knife joyent server metadata delete <server_id> <options>
     knife joyent snapshot create <server_id> <snapshot_name>
     knife joyent snapshot delete <server_id> <snapshot_name>
     knife joyent snapshot list <server_id>
