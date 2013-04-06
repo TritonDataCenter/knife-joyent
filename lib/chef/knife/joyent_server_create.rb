@@ -130,12 +130,7 @@ class Chef
       def run
         $stdout.sync = true
 
-        # add some validation here ala knife-ec2
-        unless config[:server_name] || config[:chef_node_name]
-          ui.error("You have not provided a valid server or node name.")
-          show_usage
-          exit 1
-        end
+        validate_server_name
 
         node_name = config[:chef_node_name] || config[:server_name]
 
@@ -215,6 +210,17 @@ class Chef
         bootstrap.config[:first_boot_attributes] = config[:json_attributes]
 
         bootstrap
+      end
+
+      private
+
+      def validate_server_name
+        # add some validation here ala knife-ec2
+        unless config[:server_name] || config[:chef_node_name]
+          ui.error("You have not provided a valid server or node name.")
+          show_usage
+          exit 1
+        end
       end
     end
   end
