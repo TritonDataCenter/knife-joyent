@@ -26,6 +26,7 @@ Currently available commands:
     knife joyent key delete <name>
     knife joyent key list
     knife joyent server create (options)
+    knife joyent server delete <server_id>
     knife joyent server list <options>
     knife joyent server reboot <server_id>
     knife joyent server resize <server_id> -f <flavor>
