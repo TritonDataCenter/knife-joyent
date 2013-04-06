@@ -79,6 +79,12 @@ class Chef
         :proc => Proc.new { |d| Chef::Config[:knife][:distro] = d },
         :default => "chef-full"
 
+      option :joyent_metadata,
+        :long => '--metadata JSON',
+        :description => 'Metadata to apply to machine',
+        :proc => Proc.new { |m| JSON.parse(m) },
+        :default => {}
+
       option :no_host_key_verify,
         :long => "--no-host-key-verify",
         :description => "Disable host key verification",
@@ -136,11 +142,11 @@ class Chef
 
         puts ui.color("Creating machine #{node_name}", :cyan)
 
-        server = connection.servers.create(
+        server = connection.servers.create({
           :name => node_name,
           :dataset => config[:dataset],
           :package => config[:package]
-        )
+        }.merge(joyent_metadata))
 
         print "\n#{ui.color("Waiting for server", :magenta)}"
         server.wait_for { print "."; ready? }
@@ -221,6 +227,14 @@ class Chef
           show_usage
           exit 1
         end
+      end
+
+      def joyent_metadata
+        metadata = Chef::Config[:knife][:joyent_metadata] || {}
+        metadata.merge!(config[:joyent_metadata])
+
+        return {} if metadata.empty?
+        Hash[metadata.map { |k, v| ["metadata.#{k}", v] }]
       end
     end
   end

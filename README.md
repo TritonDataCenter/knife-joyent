@@ -71,6 +71,16 @@ provider powered by [SmartDataCenter](http://www.joyent.com/products/smartdatace
     # Defaults to https://us-west-1.api.joyentcloud.com/
     knife[:joyent_api_url] = "https://us-sw-1.api.joyentcloud.com/"
 
+**joyent_metadata**
+
+Metadata to apply to each provisioned machine via the Metadata API. This should take
+the form of a hash with a single level of nesting. See the
+[Metadata API](http://wiki.joyent.com/wiki/display/sdc/Using+the+Metadata+API) for more info.
+
+    knife[:joyent_metadata] = {
+      "some_data" => "value"
+    }
+
 ## Contributors
 
  - [Sean Omera](https://github.com/someara) - Opscode
