@@ -50,7 +50,7 @@ class Chef
         :description => "A JSON string to be added to the first run of chef-client",
         :proc => lambda { |o| JSON.parse(o) },
         :default => {}
-        
+
       option :private_network,
         :long => "--private-network",
         :description => "Use the private IP for bootstrapping rather than the public IP",
@@ -95,12 +95,12 @@ class Chef
         linklocal = IPAddr.new "169.254.0.0/16"
         return linklocal.include?(ip)
       end
-      
+
       def is_loopback(ip)
         loopback = IPAddr.new "127.0.0.0/8"
         return loopback.include?(ip)
       end
-      
+
       def is_private(ip)
         block_a = IPAddr.new "10.0.0.0/8"
         block_b = IPAddr.new "172.16.0.0/12"
@@ -172,7 +172,19 @@ class Chef
 
         puts ui.color("attempting to bootstrap on #{bootstrap_ip_address}", :cyan)
 
-        print(".") until tcp_test_ssh(bootstrap_ip_address) {
+        ssh_test_max = 10*60
+        ssh_test = 0
+
+        begin
+          if ssh_test < ssh_test_max
+            print(".")
+            ssh_test += 1
+            sleep 1
+          else
+            ui.error("Unable to ssh to node (#{bootstrap_ip_address}), exiting")
+            exit 1
+          end
+        end until tcp_test_ssh(bootstrap_ip_address) {
           sleep @initial_sleep_delay ||= 10
           puts("done")
         }
