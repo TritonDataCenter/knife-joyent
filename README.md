@@ -26,6 +26,7 @@ Currently available commands:
     knife joyent key delete <name>
     knife joyent key list
     knife joyent server create (options)
+    knife joyent server delete <server_id>
     knife joyent server list <options>
     knife joyent server reboot <server_id>
     knife joyent server resize <server_id> -f <flavor>
@@ -71,6 +72,16 @@ provider powered by [SmartDataCenter](http://www.joyent.com/products/smartdatace
     
     # Defaults to https://us-west-1.api.joyentcloud.com/
     knife[:joyent_api_url] = "https://us-sw-1.api.joyentcloud.com/"
+
+**joyent_metadata**
+
+Metadata to apply to each provisioned machine via the Metadata API. This should take
+the form of a hash with a single level of nesting. See the
+[Metadata API](http://wiki.joyent.com/wiki/display/sdc/Using+the+Metadata+API) for more info.
+
+    knife[:joyent_metadata] = {
+      "some_data" => "value"
+    }
 
 ## Contributors
 
