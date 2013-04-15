@@ -1,0 +1,158 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Knife-joyent by kevinykchan</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Knife-joyent</h1>
+        <p class="header">Opscode Chef knife plug-in for Joyent CloudAPI</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/kevinykchan/knife-joyent/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/kevinykchan/knife-joyent/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/kevinykchan/knife-joyent">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/kevinykchan">kevinykchan</a></p>
+
+
+      </header>
+      <section>
+        <h1>Knife Joyent</h1>
+
+<p>This is a <a href="http://wiki.opscode.com/display/chef/Knife">Knife</a> plugin for Joyent CloudAPI. This plugin gives knife
+the ability to create, bootstrap, and manage servers on the <a href="http://www.joyentcloud.com/">Joyent Public Cloud</a> as well as Cloud providers powered by Joyent's <a href="http://www.joyent.com/products/smartdatacenter/">SmartDataCenter</a> product offering.</p>
+
+<p>For more information on Joyent CloudAPI, see: <a href="http://api.joyentcloud.com/docs">CloudAPI Documentation</a></p>
+
+<h2>Installation</h2>
+
+<p>With chef already installed <code>(&gt; 0.10.0)</code>:</p>
+
+<pre><code>gem install knife-joyent
+</code></pre>
+
+<h2>Usage</h2>
+
+<p>For a list of commands:</p>
+
+<pre><code>knife joyent --help
+</code></pre>
+
+<p>Currently available commands:</p>
+
+<pre><code>knife joyent flavor list &lt;options&gt;
+knife joyent image list &lt;options&gt;
+knife joyent key add -f &lt;keyfile&gt; -k &lt;name&gt;
+knife joyent key delete &lt;name&gt;
+knife joyent key list
+knife joyent server create (options)
+knife joyent server delete &lt;server_id&gt;
+knife joyent server list &lt;options&gt;
+knife joyent server reboot &lt;server_id&gt;
+knife joyent server resize &lt;server_id&gt; -f &lt;flavor&gt;
+knife joyent server start &lt;server_id&gt;
+knife joyent server stop &lt;server_id&gt;
+knife joyent server metadata update &lt;server_id&gt; -m &lt;json&gt;
+knife joyent server metadata delete &lt;server_id&gt; &lt;options&gt;
+knife joyent snapshot create &lt;server_id&gt; &lt;snapshot_name&gt;
+knife joyent snapshot delete &lt;server_id&gt; &lt;snapshot_name&gt;
+knife joyent snapshot list &lt;server_id&gt;
+knife joyent tag create &lt;server_id&gt; &lt;tag&gt; &lt;value&gt;
+knife joyent tag delete &lt;server_id&gt; &lt;tag&gt;
+knife joyent tag delete &lt;server_id&gt; -A
+knife joyent tag list &lt;server_id&gt;
+</code></pre>
+
+<h2>Configuration</h2>
+
+<p>The following options can be specified in your knife configuration file
+<code>knife.rb</code></p>
+
+<h4>Required</h4>
+
+<p>You can authenticate against CloudAPI using either:</p>
+
+<p>a username and password</p>
+
+<pre><code>knife[:joyent_username] = "Your Joyent CloudAPI username"
+knife[:joyent_password] = "Your Joyent CloudAPI password"
+</code></pre>
+
+<p>or, your ssh key</p>
+
+<pre><code>knife[:joyent_username] = "Your Joyent CloudAPI username"
+knife[:joyent_keyname] = "Name of key stored on Joyent"
+knife[:joyent_keyfile] = "/path/to/your/private/key"
+</code></pre>
+
+<h4>Optional</h4>
+
+<p><strong>joyent_api_url</strong></p>
+
+<p>Specify a custom API endpoint, this is required if you want to specify 
+where you want to provision your machines, or if you are using knife with a
+provider powered by <a href="http://www.joyent.com/products/smartdatacenter/">SmartDataCenter</a>.</p>
+
+<pre><code># Defaults to https://us-west-1.api.joyentcloud.com/
+knife[:joyent_api_url] = "https://us-sw-1.api.joyentcloud.com/"
+</code></pre>
+
+<p><strong>joyent_metadata</strong></p>
+
+<p>Metadata to apply to each provisioned machine via the Metadata API. This should take
+the form of a hash with a single level of nesting. See the
+<a href="http://wiki.joyent.com/wiki/display/sdc/Using+the+Metadata+API">Metadata API</a> for more info.</p>
+
+<pre><code>knife[:joyent_metadata] = {
+  "some_data" =&gt; "value"
+}
+</code></pre>
+
+<h2>Contributors</h2>
+
+<ul>
+<li>
+<a href="https://github.com/someara">Sean Omera</a> - Opscode</li>
+<li>
+<a href="https://github.com/sax">Eric Saxby</a> - ModCloth</li>
+<li>
+<a href="https://github.com/stephenlauck">Stephen Lauck</a> - ModCloth</li>
+</ul><h2>License</h2>
+
+<p>Copyright 2012 Joyent, Inc</p>
+
+<p>Author: Kevin Chan <a href="mailto:kevin@joyent.com">kevin@joyent.com</a></p>
+
+<p>Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+
+<p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
