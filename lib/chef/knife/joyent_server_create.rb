@@ -43,7 +43,14 @@ class Chef
         :description => "Comma separated list of roles/recipes to apply",
         :proc => lambda { |o| o.split(/[\s,]+/) },
         :default => []
-        
+
+      option :json_attributes,
+        :short => "-j JSON",
+        :long => "--json-attributes JSON",
+        :description => "A JSON string to be added to the first run of chef-client",
+        :proc => lambda { |o| JSON.parse(o) },
+        :default => {}
+
       option :private_network,
         :long => "--private-network",
         :description => "Use the private IP for bootstrapping rather than the public IP",
@@ -72,6 +79,12 @@ class Chef
         :proc => Proc.new { |d| Chef::Config[:knife][:distro] = d },
         :default => "chef-full"
 
+      option :joyent_metadata,
+        :long => '--metadata JSON',
+        :description => 'Metadata to apply to machine',
+        :proc => Proc.new { |m| JSON.parse(m) },
+        :default => {}
+
       option :no_host_key_verify,
         :long => "--no-host-key-verify",
         :description => "Disable host key verification",
@@ -82,12 +95,12 @@ class Chef
         linklocal = IPAddr.new "169.254.0.0/16"
         return linklocal.include?(ip)
       end
-      
+
       def is_loopback(ip)
         loopback = IPAddr.new "127.0.0.0/8"
         return loopback.include?(ip)
       end
-      
+
       def is_private(ip)
         block_a = IPAddr.new "10.0.0.0/8"
         block_b = IPAddr.new "172.16.0.0/12"
@@ -123,22 +136,17 @@ class Chef
       def run
         $stdout.sync = true
 
-        # add some validation here ala knife-ec2
-        unless config[:server_name] || config[:chef_node_name]
-          ui.error("You have not provided a valid server or node name.")
-          show_usage
-          exit 1
-        end
+        validate_server_name
 
         node_name = config[:chef_node_name] || config[:server_name]
 
         puts ui.color("Creating machine #{node_name}", :cyan)
 
-        server = connection.servers.create(
+        server = connection.servers.create({
           :name => node_name,
           :dataset => config[:dataset],
           :package => config[:package]
-        )
+        }.merge(joyent_metadata))
 
         print "\n#{ui.color("Waiting for server", :magenta)}"
         server.wait_for { print "."; ready? }
@@ -164,7 +172,19 @@ class Chef
 
         puts ui.color("attempting to bootstrap on #{bootstrap_ip_address}", :cyan)
 
-        print(".") until tcp_test_ssh(bootstrap_ip_address) {
+        ssh_test_max = 10*60
+        ssh_test = 0
+
+        begin
+          if ssh_test < ssh_test_max
+            print(".")
+            ssh_test += 1
+            sleep 1
+          else
+            ui.error("Unable to ssh to node (#{bootstrap_ip_address}), exiting")
+            exit 1
+          end
+        end until tcp_test_ssh(bootstrap_ip_address) {
           sleep @initial_sleep_delay ||= 10
           puts("done")
         }
@@ -196,6 +216,7 @@ class Chef
         msg_pair("Type", server.type)
         msg_pair("Dataset", server.dataset)
         msg_pair("IP's", server.ips)
+        msg_pair("JSON Attributes",config[:json_attributes]) unless config[:json_attributes].empty?
       end
 
       # Run Chef bootstrap script
@@ -221,8 +242,29 @@ class Chef
         bootstrap.config[:environment] = config[:environment]
         Chef::Log.debug("Bootstrap no_host_key_verify = #{config[:no_host_key_verify]}")
         bootstrap.config[:no_host_key_verify] = config[:no_host_key_verify]
+        Chef::Log.debug("Bootstrap json_attributes = #{config[:json_attributes]}")
+        bootstrap.config[:first_boot_attributes] = config[:json_attributes]
 
         bootstrap
+      end
+
+      private
+
+      def validate_server_name
+        # add some validation here ala knife-ec2
+        unless config[:server_name] || config[:chef_node_name]
+          ui.error("You have not provided a valid server or node name.")
+          show_usage
+          exit 1
+        end
+      end
+
+      def joyent_metadata
+        metadata = Chef::Config[:knife][:joyent_metadata] || {}
+        metadata.merge!(config[:joyent_metadata])
+
+        return {} if metadata.empty?
+        Hash[metadata.map { |k, v| ["metadata.#{k}", v] }]
       end
     end
   end
