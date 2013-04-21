@@ -190,12 +190,12 @@ class Chef
         }
 
         if Chef::Config[:knife][:local_user]
-          # tag with provisioner via knife $USER
+          # tag with provisioner via knife local_user (typically configured as ENV['USER'])
           tagkey = 'provisioner'
           tagvalue = Chef::Config[:knife][:local_user]
           tags = [
             ui.color('Name', :bold),
-           ui.color('Value', :bold),
+            ui.color('Value', :bold),
           ]
           server.add_tags({tagkey => tagvalue}).each do |k, v|
             tags << k
