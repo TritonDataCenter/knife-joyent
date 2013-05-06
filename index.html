@@ -7,7 +7,6 @@
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,18 +15,17 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1 class="header">Knife-joyent</h1>
-        <p class="header">Opscode Chef knife plug-in for Joyent CloudAPI</p>
+        <h1>Knife-joyent</h1>
+        <p>Opscode Chef knife plug-in for Joyent CloudAPI</p>
+
+        <p class="view"><a href="https://github.com/kevinykchan/knife-joyent">View the Project on GitHub <small>kevinykchan/knife-joyent</small></a></p>
+
 
         <ul>
-          <li class="download"><a class="buttons" href="https://github.com/kevinykchan/knife-joyent/zipball/master">Download ZIP</a></li>
-          <li class="download"><a class="buttons" href="https://github.com/kevinykchan/knife-joyent/tarball/master">Download TAR</a></li>
-          <li><a class="buttons github" href="https://github.com/kevinykchan/knife-joyent">View On GitHub</a></li>
+          <li><a href="https://github.com/kevinykchan/knife-joyent/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/kevinykchan/knife-joyent/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/kevinykchan/knife-joyent">View On <strong>GitHub</strong></a></li>
         </ul>
-
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/kevinykchan">kevinykchan</a></p>
-
-
       </header>
       <section>
         <h1>Knife Joyent</h1>
@@ -102,7 +100,7 @@ knife[:joyent_keyfile] = "/path/to/your/private/key"
 
 <p><strong>joyent_api_url</strong></p>
 
-<p>Specify a custom API endpoint, this is required if you want to specify 
+<p>Specify a custom API endpoint, this is required if you want to specify
 where you want to provision your machines, or if you are using knife with a
 provider powered by <a href="http://www.joyent.com/products/smartdatacenter/">SmartDataCenter</a>.</p>
 
@@ -120,6 +118,12 @@ the form of a hash with a single level of nesting. See the
   "some_data" =&gt; "value"
 }
 </code></pre>
+
+<p><strong>provisioner</strong></p>
+
+<p>Machines provisioned will be tagged with key <code>provisioner</code> containing the value specified.
+This is useful for tracking source of provisions for accounts where machines are provisioned
+by/from different sources / users.</p>
 
 <h2>Contributors</h2>
 
@@ -149,10 +153,11 @@ See the License for the specific language governing permissions and
 limitations under the License.</p>
       </section>
       <footer>
-        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+        <p>This project is maintained by <a href="https://github.com/kevinykchan">kevinykchan</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-		
+    <script src="javascripts/scale.fix.js"></script>
+    
   </body>
 </html>
