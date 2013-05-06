@@ -66,10 +66,10 @@ or, your ssh key
 
 **joyent_api_url**
 
-Specify a custom API endpoint, this is required if you want to specify 
+Specify a custom API endpoint, this is required if you want to specify
 where you want to provision your machines, or if you are using knife with a
 provider powered by [SmartDataCenter](http://www.joyent.com/products/smartdatacenter/).
-    
+
     # Defaults to https://us-west-1.api.joyentcloud.com/
     knife[:joyent_api_url] = "https://us-sw-1.api.joyentcloud.com/"
 
@@ -82,6 +82,12 @@ the form of a hash with a single level of nesting. See the
     knife[:joyent_metadata] = {
       "some_data" => "value"
     }
+
+**provisioner**
+
+Machines provisioned will be tagged with key ``provisioner`` containing the value specified.
+This is useful for tracking source of provisions for accounts where machines are provisioned
+by/from different sources / users.
 
 ## Contributors
 

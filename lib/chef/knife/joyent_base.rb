@@ -45,7 +45,7 @@ class Chef
 
       def connection
         @connection ||= begin
-          connection = Fog::Compute.new(
+           Fog::Compute.new(
             :provider => 'Joyent',
             :joyent_username => Chef::Config[:knife][:joyent_username],
             :joyent_password => Chef::Config[:knife][:joyent_password],
