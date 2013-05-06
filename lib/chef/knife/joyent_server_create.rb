@@ -184,6 +184,19 @@ class Chef
         msg_pair("Dataset", server.dataset)
         msg_pair("IP's", server.ips.join(" "))
         msg_pair("JSON Attributes",config[:json_attributes]) unless config[:json_attributes].empty?
+
+      rescue Excon::Errors::Conflict => e
+        if e.response && e.response.body.kind_of?(String)
+          error = ::Fog::JSON.decode(e.response.body)
+          puts ui.error(error['message'])
+          exit 1
+        else
+          puts ui.error(e.message)
+          exit 1
+        end
+      rescue => e
+        puts ui.error('Unexpected Error Occured:' + e.message)
+        exit 1
       end
 
       # Run Chef bootstrap script
