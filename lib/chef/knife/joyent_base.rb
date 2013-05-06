@@ -21,7 +21,7 @@ class Chef
 
           option :joyent_password,
             :short => '-P PASSWORD',
-            :long => '--joyent-password PASSOWRD',
+            :long => '--joyent-password PASSWORD',
             :description => 'Your Joyent password',
             :proc => Proc.new {|key| Chef::Config[:knife][:joyent_password] = key }
 
