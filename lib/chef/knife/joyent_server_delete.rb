@@ -25,7 +25,7 @@ class Chef
         msg("State", server.state)
         msg("Type", server.type)
         msg("Dataset", server.dataset)
-        msg("IP's", server.ips)
+        msg("IP's", server.ips.join(" "))
        
         unless server
           puts ui.error("Unable to locate server: #{id}")
