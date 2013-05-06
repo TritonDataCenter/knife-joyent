@@ -108,8 +108,158 @@ class Chef
         return (block_a.include?(ip) or block_b.include?(ip) or block_c.include?(ip))
       end
 
-      # wait for ssh to come up
       def tcp_test_ssh(hostname)
+        ssh_test_max = 10*60
+        ssh_test = 0
+
+        begin
+          if ssh_test < ssh_test_max
+            print(".")
+            ssh_test += 1
+            sleep 1
+          else
+            ui.error("Unable to ssh to node (#{bootstrap_ip_address}), exiting")
+            exit 1
+          end
+        end until _tcp_test_ssh(bootstrap_id) {
+          sleep @initial_sleep_delay ||= 10
+          puts("done")
+        }
+      end
+
+
+      def run
+        $stdout.sync = true
+
+        validate_server_name
+
+        node_name = config[:chef_node_name] || config[:server_name]
+
+        puts ui.color("Creating machine #{node_name}", :cyan)
+
+        server = connection.servers.create({
+          :name => node_name,
+          :dataset => config[:dataset],
+          :package => config[:package]
+        }.merge(joyent_metadata))
+
+        print "\n#{ui.color("Waiting for server", :magenta)}"
+        server.wait_for { print "."; ready? }
+
+        bootstrap_ip = self.determine_bootstrap_ip(server)
+
+        Chef::Log.debug("Bootstrap IP Address #{bootstrap_ip}")
+        unless bootstrap_ip
+          ui.error("No IP address available for bootstrapping.")
+          exit 1
+        end
+
+        puts ui.color("attempting to bootstrap on #{bootstrap_ip}", :cyan)
+
+        if Chef::Config[:knife][:provisioner]
+          # tag the provision with 'provisioner'
+          tagkey = 'provisioner'
+          tagvalue = Chef::Config[:knife][:provisioner]
+          tags = [
+            ui.color('Name', :bold),
+            ui.color('Value', :bold),
+          ]
+          server.add_tags({tagkey => tagvalue}).each do |k, v|
+            tags << k
+            tags << v
+          end
+          puts ui.color("Updated tags for #{node_name}", :cyan)
+          puts ui.list(tags, :uneven_columns_across, 2)
+        else
+          puts ui.color("No user defined in knife config for provision tagging", :magenta)
+        end
+
+        bootstrap_for_node(server, bootstrap_ip).run
+
+        puts ui.color("Created machine:", :cyan)
+        msg_pair("ID", server.id.to_s)
+        msg_pair("Name", server.name)
+        msg_pair("State", server.state)
+        msg_pair("Type", server.type)
+        msg_pair("Dataset", server.dataset)
+        msg_pair("IP's", server.ips.join(" "))
+        msg_pair("JSON Attributes",config[:json_attributes]) unless config[:json_attributes].empty?
+      end
+
+      # Run Chef bootstrap script
+      def bootstrap_for_node(server, bootstrap_ip)
+        bootstrap = Chef::Knife::Bootstrap.new
+        Chef::Log.debug("Bootstrap name_args = [ #{bootstrap_ip} ]")
+        bootstrap.name_args = [ bootstrap_ip ]
+
+        Chef::Log.debug("Bootstrap run_list = #{config[:run_list]}")
+        bootstrap.config[:run_list] = config[:run_list]
+
+        Chef::Log.debug("Bootstrap ssh_user = #{config[:ssh_user]}")
+        bootstrap.config[:ssh_user] = config[:ssh_user]
+
+        Chef::Log.debug("Bootstrap identity_file = #{config[:identity_file]}")
+        bootstrap.config[:identity_file] = config[:identity_file]
+
+        Chef::Log.debug("Bootstrap chef_node_name = #{config[:chef_node_name]}")
+        bootstrap.config[:chef_node_name] = config[:chef_node_name] || server.id
+
+        Chef::Log.debug("Bootstrap prerelease = #{config[:prerelease]}")
+        bootstrap.config[:prerelease] = config[:prerelease]
+
+        Chef::Log.debug("Bootstrap distro = #{config[:distro]}")
+        bootstrap.config[:distro] = config[:distro]
+
+        #Chef::Log.debug("Bootstrap use_sudo = #{config[:use_sudo]}")
+        #bootstrap.config[:use_sudo] = true
+
+        Chef::Log.debug("Bootstrap environment = #{config[:environment]}")
+        bootstrap.config[:environment] = config[:environment]
+
+        Chef::Log.debug("Bootstrap no_host_key_verify = #{config[:no_host_key_verify]}")
+        bootstrap.config[:no_host_key_verify] = config[:no_host_key_verify]
+
+        Chef::Log.debug("Bootstrap json_attributes = #{config[:json_attributes]}")
+        bootstrap.config[:first_boot_attributes] = config[:json_attributes]
+
+        bootstrap
+      end
+
+      def determine_bootstrap_ip(server)
+        server_ips = server.ips.select{ |ip|
+          ip and not(is_loopback(ip) or is_linklocal(ip))
+        }
+        if server_ips.count === 1
+          server_ips.first
+        else
+          if config[:private_network]
+            server_ips.find{|ip| is_private(ip)}
+          else
+            server_ips.find{|ip| not is_private(ip)}
+          end
+        end
+      end
+
+      private
+
+      def validate_server_name
+        # add some validation here ala knife-ec2
+        unless config[:server_name] || config[:chef_node_name]
+          ui.error("You have not provided a valid server or node name.")
+          show_usage
+          exit 1
+        end
+      end
+
+      def joyent_metadata
+        metadata = Chef::Config[:knife][:joyent_metadata] || {}
+        metadata.merge!(config[:joyent_metadata])
+
+        return {} if metadata.empty?
+        Hash[metadata.map { |k, v| ["metadata.#{k}", v] }]
+      end
+
+      def _tcp_test_ssh(hostname)
         tcp_socket = TCPSocket.new(hostname, 22)
         readable = IO.select([tcp_socket], nil, nil, 5)
         if readable
@@ -133,139 +283,6 @@ class Chef
         tcp_socket && tcp_socket.close
       end
 
-      def run
-        $stdout.sync = true
-
-        validate_server_name
-
-        node_name = config[:chef_node_name] || config[:server_name]
-
-        puts ui.color("Creating machine #{node_name}", :cyan)
-
-        server = connection.servers.create({
-          :name => node_name,
-          :dataset => config[:dataset],
-          :package => config[:package]
-        }.merge(joyent_metadata))
-
-        print "\n#{ui.color("Waiting for server", :magenta)}"
-        server.wait_for { print "."; ready? }
-
-        #which IP address to bootstrap
-        bootstrap_ip_addresses = server.ips.select{ |ip| ip and not(is_loopback(ip) or is_linklocal(ip)) }
-
-        if bootstrap_ip_addresses.count == 1
-          bootstrap_ip_address = bootstrap_ip_addresses.first
-        else
-          if config[:private_network]
-            bootstrap_ip_address = bootstrap_ip_addresses.find{|ip| is_private(ip)}
-          else
-            bootstrap_ip_address = bootstrap_ip_addresses.find{|ip| not is_private(ip)}
-          end
-        end
-
-        Chef::Log.debug("Bootstrap IP Address #{bootstrap_ip_address}")
-        if bootstrap_ip_address.nil?
-          ui.error("No IP address available for bootstrapping.")
-          exit 1
-        end
-
-        puts ui.color("attempting to bootstrap on #{bootstrap_ip_address}", :cyan)
-
-        ssh_test_max = 10*60
-        ssh_test = 0
-
-        begin
-          if ssh_test < ssh_test_max
-            print(".")
-            ssh_test += 1
-            sleep 1
-          else
-            ui.error("Unable to ssh to node (#{bootstrap_ip_address}), exiting")
-            exit 1
-          end
-        end until tcp_test_ssh(bootstrap_ip_address) {
-          sleep @initial_sleep_delay ||= 10
-          puts("done")
-        }
-
-        if Chef::Config[:knife][:local_user]
-          # tag with provisioner via knife local_user (typically configured as ENV['USER'])
-          tagkey = 'provisioner'
-          tagvalue = Chef::Config[:knife][:local_user]
-          tags = [
-            ui.color('Name', :bold),
-            ui.color('Value', :bold),
-          ]
-          server.add_tags({tagkey => tagvalue}).each do |k, v|
-            tags << k
-            tags << v
-          end
-          puts ui.color("Updated tags for #{node_name}", :cyan)
-          puts ui.list(tags, :uneven_columns_across, 2)
-        else
-          puts ui.color("No user defined in knife config for provision tagging", :magenta)
-        end
-
-        bootstrap_for_node(server, bootstrap_ip_address).run
-
-        puts ui.color("Created machine:", :cyan)
-        msg_pair("ID", server.id.to_s)
-        msg_pair("Name", server.name)
-        msg_pair("State", server.state)
-        msg_pair("Type", server.type)
-        msg_pair("Dataset", server.dataset)
-        msg_pair("IP's", server.ips.join(" "))
-        msg_pair("JSON Attributes",config[:json_attributes]) unless config[:json_attributes].empty?
-      end
-
-      # Run Chef bootstrap script
-      def bootstrap_for_node(server, bootstrap_ip_address)
-        bootstrap = Chef::Knife::Bootstrap.new
-        Chef::Log.debug("Bootstrap name_args = [ #{bootstrap_ip_address} ]")
-        bootstrap.name_args = [ bootstrap_ip_address ]
-        Chef::Log.debug("Bootstrap run_list = #{config[:run_list]}")
-        bootstrap.config[:run_list] = config[:run_list]
-        Chef::Log.debug("Bootstrap ssh_user = #{config[:ssh_user]}")
-        bootstrap.config[:ssh_user] = config[:ssh_user]
-        Chef::Log.debug("Bootstrap identity_file = #{config[:identity_file]}")
-        bootstrap.config[:identity_file] = config[:identity_file]
-        Chef::Log.debug("Bootstrap chef_node_name = #{config[:chef_node_name]}")
-        bootstrap.config[:chef_node_name] = config[:chef_node_name] || server.id
-        Chef::Log.debug("Bootstrap prerelease = #{config[:prerelease]}")
-        bootstrap.config[:prerelease] = config[:prerelease]
-        Chef::Log.debug("Bootstrap distro = #{config[:distro]}")
-        bootstrap.config[:distro] = config[:distro]
-        #Chef::Log.debug("Bootstrap use_sudo = #{config[:use_sudo]}")
-        #bootstrap.config[:use_sudo] = true
-        Chef::Log.debug("Bootstrap environment = #{config[:environment]}")
-        bootstrap.config[:environment] = config[:environment]
-        Chef::Log.debug("Bootstrap no_host_key_verify = #{config[:no_host_key_verify]}")
-        bootstrap.config[:no_host_key_verify] = config[:no_host_key_verify]
-        Chef::Log.debug("Bootstrap json_attributes = #{config[:json_attributes]}")
-        bootstrap.config[:first_boot_attributes] = config[:json_attributes]
-
-        bootstrap
-      end
-
-      private
-
-      def validate_server_name
-        # add some validation here ala knife-ec2
-        unless config[:server_name] || config[:chef_node_name]
-          ui.error("You have not provided a valid server or node name.")
-          show_usage
-          exit 1
-        end
-      end
-
-      def joyent_metadata
-        metadata = Chef::Config[:knife][:joyent_metadata] || {}
-        metadata.merge!(config[:joyent_metadata])
-
-        return {} if metadata.empty?
-        Hash[metadata.map { |k, v| ["metadata.#{k}", v] }]
-      end
     end
   end
 end
