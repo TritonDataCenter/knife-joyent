@@ -42,6 +42,16 @@ Currently available commands:
     knife joyent tag delete <server_id> -A
     knife joyent tag list <server_id>
 
+## Example Usage
+
+The following command will provision an Ubuntu 12.04 with 1GB of memory and bootstrap it with chef
+
+    knife joyent server create \
+        --flavor "Small 1GB"
+        --image d2ba0f30-bbe8-11e2-a9a2-6bc116856d85 \
+        --node-name 'chefbuntu-x' \
+        --server-name 'chefbuntu-x'
+
 ## Configuration
 
 The following options can be specified in your knife configuration file
