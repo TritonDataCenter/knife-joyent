@@ -111,20 +111,17 @@ class Chef
       def tcp_test_ssh(hostname)
         ssh_test_max = 10*60
         ssh_test = 0
-
-        begin
+        until _tcp_test_ssh(hostname)
           if ssh_test < ssh_test_max
             print(".")
             ssh_test += 1
             sleep 1
           else
-            ui.error("Unable to ssh to node (#{bootstrap_ip_address}), exiting")
+            puts ui.error("Unable to ssh to node (#{bootstrap_ip_address}), exiting")
             exit 1
           end
-        end until _tcp_test_ssh(bootstrap_id) {
-          sleep @initial_sleep_delay ||= 10
-          puts("done")
-        }
+        end
+        puts ui.color("SSH Ready.", :cyan)
       end
 
 
@@ -143,19 +140,18 @@ class Chef
           :package => config[:package]
         }.merge(joyent_metadata))
 
-        print "\n#{ui.color("Waiting for server", :magenta)}"
+        puts ui.color("Waiting for Server to be Provisioned", :magenta)
         server.wait_for { print "."; ready? }
 
         bootstrap_ip = self.determine_bootstrap_ip(server)
 
-        Chef::Log.debug("Bootstrap IP Address #{bootstrap_ip}")
         unless bootstrap_ip
-          ui.error("No IP address available for bootstrapping.")
+          puts ui.error("No IP address available for bootstrapping.")
           exit 1
         end
 
-        puts ui.color("attempting to bootstrap on #{bootstrap_ip}", :cyan)
-
+        Chef::Log.debug("Bootstrap IP Address #{bootstrap_ip}")
+        puts ui.color("Bootstrap IP Address #{bootstrap_ip}", :cyan)
         if Chef::Config[:knife][:provisioner]
           # tag the provision with 'provisioner'
           tagkey = 'provisioner'
@@ -171,10 +167,8 @@ class Chef
           puts ui.color("Updated tags for #{node_name}", :cyan)
           puts ui.list(tags, :uneven_columns_across, 2)
         else
-          puts ui.color("No user defined in knife config for provision tagging", :magenta)
+          puts ui.color("No user defined in knife config for provision tagging -- continuing", :magenta)
         end
-
-        bootstrap_for_node(server, bootstrap_ip).run
 
         puts ui.color("Created machine:", :cyan)
         msg_pair("ID", server.id.to_s)
@@ -184,6 +178,12 @@ class Chef
         msg_pair("Dataset", server.dataset)
         msg_pair("IP's", server.ips.join(" "))
         msg_pair("JSON Attributes",config[:json_attributes]) unless config[:json_attributes].empty?
+
+        puts ui.color("Waiting for SSH to come up on: #{bootstrap_ip}", :cyan)
+        tcp_test_ssh(bootstrap_ip)
+
+        puts ui.color("Bootstrapping: #{bootstrap_ip}", :cyan)
+        bootstrap_for_node(server, bootstrap_ip).run
 
       rescue Excon::Errors::Conflict => e
         if e.response && e.response.body.kind_of?(String)
@@ -276,8 +276,8 @@ class Chef
         tcp_socket = TCPSocket.new(hostname, 22)
         readable = IO.select([tcp_socket], nil, nil, 5)
         if readable
+          puts ui.color("SSHD OK [#{hostname}] #{tcp_socket.gets}", :cyan)
           Chef::Log.debug("sshd accepting connections on #{hostname}, banner is #{tcp_socket.gets}")
-          yield
           true
         else
           false
@@ -287,10 +287,12 @@ class Chef
       rescue Errno::EPERM
         false
       rescue Errno::ECONNREFUSED
-        sleep 2
+        false
+      rescue Errno::ECONNRESET
+        false
+      rescue Errno::ENETUNREACH
         false
       rescue Errno::EHOSTUNREACH
-        sleep 2
         false
       ensure
         tcp_socket && tcp_socket.close
