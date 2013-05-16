@@ -47,10 +47,12 @@ Currently available commands:
 The following command will provision an Ubuntu 12.04 with 1GB of memory and bootstrap it with chef
 
     knife joyent server create \
-        --flavor "Small 1GB"
+        --flavor "Small 1GB" \
         --image d2ba0f30-bbe8-11e2-a9a2-6bc116856d85 \
         --node-name 'chefbuntu-x' \
         --server-name 'chefbuntu-x'
+
+Please see ``knife joyent server create --help`` for more options
 
 ## Configuration
 
