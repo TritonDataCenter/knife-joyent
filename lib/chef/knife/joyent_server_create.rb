@@ -121,7 +121,6 @@ class Chef
             exit 1
           end
         end
-        puts ui.color("SSH Ready.", :cyan)
       end
 
 
@@ -182,20 +181,31 @@ class Chef
         puts ui.color("Waiting for SSH to come up on: #{bootstrap_ip}", :cyan)
         tcp_test_ssh(bootstrap_ip)
 
-        puts ui.color("Bootstrapping: #{bootstrap_ip}", :cyan)
+        # smartos zoneinit needs to take it's time
+        if server.type == 'smartmachine'
+          puts ui.color("Waiting for smartos to fully initialize...", :cyan)
+          sleep 25
+        end
+
         bootstrap_for_node(server, bootstrap_ip).run
 
       rescue Excon::Errors::Conflict => e
         if e.response && e.response.body.kind_of?(String)
           error = ::Fog::JSON.decode(e.response.body)
-          puts ui.error(error['message'])
+          print ui.error(error['message'])
+          if error.key?('errors') && error['errors'].kind_of?(Array)
+            error['errors'].each do |err|
+              print ui.error " * [#{err['field']}] #{err['message']}"
+            end
+          end
           exit 1
         else
           puts ui.error(e.message)
           exit 1
         end
+
       rescue => e
-        puts ui.error('Unexpected Error Occured:' + e.message)
+        puts ui.error('Unexpected Error Occured:' + e.inspect)
         exit 1
       end
 
@@ -276,23 +286,22 @@ class Chef
         tcp_socket = TCPSocket.new(hostname, 22)
         readable = IO.select([tcp_socket], nil, nil, 5)
         if readable
-          puts ui.color("SSHD OK [#{hostname}] #{tcp_socket.gets}", :cyan)
-          Chef::Log.debug("sshd accepting connections on #{hostname}, banner is #{tcp_socket.gets}")
+          banner = tcp_socket.gets
+          puts ui.color("SSHD accepting connections on #{hostname}: banner is #{banner}")
+          Chef::Log.debug("SSHD accepting connections on #{hostname}: banner is #{banner}")
           true
         else
           false
         end
-      rescue Errno::ETIMEDOUT
-        false
-      rescue Errno::EPERM
-        false
-      rescue Errno::ECONNREFUSED
-        false
-      rescue Errno::ECONNRESET
-        false
-      rescue Errno::ENETUNREACH
-        false
-      rescue Errno::EHOSTUNREACH
+      rescue SocketError,
+             IOError,
+             Errno::ETIMEDOUT,
+             Errno::EPERM,
+             Errno::ECONNREFUSED,
+             Errno::ECONNRESET,
+             Errno::ENETUNREACH,
+             Errno::EHOSTUNREACH
+        sleep 2
         false
       ensure
         tcp_socket && tcp_socket.close
