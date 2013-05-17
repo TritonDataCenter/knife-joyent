@@ -179,14 +179,11 @@ class Chef
         msg_pair("IP's", server.ips.join(" "))
         msg_pair("JSON Attributes",config[:json_attributes]) unless config[:json_attributes].empty?
 
+        puts ui.color("Waiting for server to fully initialize...", :cyan)
+        sleep 20
+
         puts ui.color("Waiting for SSH to come up on: #{bootstrap_ip}", :cyan)
         tcp_test_ssh(bootstrap_ip)
-
-        # smartos zoneinit needs to take it's time
-        if server.type == 'smartmachine'
-          puts ui.color("Waiting for smartos to fully initialize...", :cyan)
-          sleep 25
-        end
 
         bootstrap_for_node(server, bootstrap_ip).run
 
