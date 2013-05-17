@@ -1,33 +1,36 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Knife-joyent by kevinykchan</title>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Knife-joyent : Opscode Chef knife plug-in for Joyent CloudAPI" />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Knife-joyent</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>Knife-joyent</h1>
-        <p>Opscode Chef knife plug-in for Joyent CloudAPI</p>
 
-        <p class="view"><a href="https://github.com/kevinykchan/knife-joyent">View the Project on GitHub <small>kevinykchan/knife-joyent</small></a></p>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/kevinykchan/knife-joyent">View on GitHub</a>
 
+          <h1 id="project_title">Knife-joyent</h1>
+          <h2 id="project_tagline">Opscode Chef knife plug-in for Joyent CloudAPI</h2>
 
-        <ul>
-          <li><a href="https://github.com/kevinykchan/knife-joyent/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/kevinykchan/knife-joyent/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/kevinykchan/knife-joyent">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/kevinykchan/knife-joyent/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/kevinykchan/knife-joyent/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>Knife Joyent</h1>
 
 <p>This is a <a href="http://wiki.opscode.com/display/chef/Knife">Knife</a> plugin for Joyent CloudAPI. This plugin gives knife
@@ -73,6 +76,19 @@ knife joyent tag delete &lt;server_id&gt; &lt;tag&gt;
 knife joyent tag delete &lt;server_id&gt; -A
 knife joyent tag list &lt;server_id&gt;
 </code></pre>
+
+<h2>Example Usage</h2>
+
+<p>The following command will provision an Ubuntu 12.04 with 1GB of memory and bootstrap it with chef</p>
+
+<pre><code>knife joyent server create \
+    --flavor "Small 1GB" \
+    --image d2ba0f30-bbe8-11e2-a9a2-6bc116856d85 \
+    --node-name 'chefbuntu-x' \
+    --server-name 'chefbuntu-x'
+</code></pre>
+
+<p>Please see <code>knife joyent server create --help</code> for more options</p>
 
 <h2>Configuration</h2>
 
@@ -134,7 +150,12 @@ by/from different sources / users.</p>
 <a href="https://github.com/sax">Eric Saxby</a> - ModCloth</li>
 <li>
 <a href="https://github.com/stephenlauck">Stephen Lauck</a> - ModCloth</li>
-</ul><h2>License</h2>
+</ul><h2>Bootstrap template for smartos</h2>
+
+<p>To bootstrap chef on SmartOS, use this <a href="https://github.com/kevinykchan/knife-joyent/blob/master/bootstrap/smartos-base-1.9.erb">bootstrap
+template</a></p>
+
+<h2>License</h2>
 
 <p>Copyright 2012 Joyent, Inc</p>
 
@@ -152,12 +173,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.</p>
       </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/kevinykchan">kevinykchan</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Knife-joyent maintained by <a href="https://github.com/kevinykchan">kevinykchan</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
+
     
+
   </body>
 </html>
