@@ -150,6 +150,7 @@ class Chef
         end
 
         Chef::Log.debug("Bootstrap IP Address #{bootstrap_ip}")
+        puts "\n"
         puts ui.color("Bootstrap IP Address #{bootstrap_ip}", :cyan)
         if Chef::Config[:knife][:provisioner]
           # tag the provision with 'provisioner'

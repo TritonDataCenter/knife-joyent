@@ -107,6 +107,10 @@ by/from different sources / users.
  - [Eric Saxby](https://github.com/sax) - ModCloth
  - [Stephen Lauck](https://github.com/stephenlauck) - ModCloth
 
+## Chef for smartos
+
+To bootstrap chef on SmartOS, use this [bootstrap template](https://gist.github.com/stephenlauck/3836791)
+
 ## License
 
 Copyright 2012 Joyent, Inc
