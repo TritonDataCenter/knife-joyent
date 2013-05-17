@@ -109,8 +109,8 @@ by/from different sources / users.
 
 ## Bootstrap template for smartos
 
-To bootstrap chef on SmartOS, use this [bootstrap
-template](https://github.com/kevinykchan/knife-joyent/blob/master/bootstrap/smartos-base-1.9.erb)
+To bootstrap chef on SmartOS, use the script provided at the [Joyent Wiki] (http://wiki.joyent.com/wiki/display/jpc2/Joyent+ChefServer+SmartMachine#JoyentChefServerSmartMachine-BootstrappingaBareImagedSmartMachinetoyourChefServer)
+which sets up chef-client with SMF and installs the basic essentials.
 
 ## License
 
