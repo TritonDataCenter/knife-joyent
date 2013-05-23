@@ -160,11 +160,10 @@ class Chef
             ui.color('Name', :bold),
             ui.color('Value', :bold),
           ]
-          server.add_tags({tagkey => tagvalue}).each do |k, v|
-            unless k == 'context'
-              tags << k
-              tags << v
-            end
+          response = server.add_tags({tagkey => tagvalue})
+          if response['provisioner']
+            tags << 'provisioner'
+            tags << response['provisioner']
           end
           puts ui.color("Updated tags for #{node_name}", :cyan)
           puts ui.list(tags, :uneven_columns_across, 2)
