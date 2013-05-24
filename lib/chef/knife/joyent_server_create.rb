@@ -176,7 +176,7 @@ class Chef
         msg_pair("State", server.state)
         msg_pair("Type", server.type)
         msg_pair("Dataset", server.dataset)
-        msg_pair("IP's", server.ips.join(" "))
+        msg_pair("IPs", server.ips.join(" "))
         msg_pair("JSON Attributes",config[:json_attributes]) unless config[:json_attributes].empty?
 
         puts ui.color("Waiting for server to fully initialize...", :cyan)
