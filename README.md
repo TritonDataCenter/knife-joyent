@@ -25,6 +25,7 @@ Currently available commands:
     knife joyent key add -f <keyfile> -k <name>
     knife joyent key delete <name>
     knife joyent key list
+    knife joyent network list
     knife joyent server create (options)
     knife joyent server delete <server_id>
     knife joyent server list <options>
@@ -74,7 +75,7 @@ or, your ssh key
     knife[:joyent_keyname] = "Name of key stored on Joyent"
     knife[:joyent_keyfile] = "/path/to/your/private/key"
 
-#### Optional
+#### Optional Configuration
 
 **joyent_api_url**
 
@@ -95,6 +96,15 @@ the form of a hash with a single level of nesting. See the
       "some_data" => "value"
     }
 
+**joyent_version**
+
+By default, knife-joyent will use the version of the Joyent Cloud API that fog prefers. This
+can be overridden in knife.rb as follows:
+
+    knife[:joyent_version] = "~7.0"
+
+Some command line options to knife-joyent subcommands may depend on the Joyent API version set.
+
 **provisioner**
 
 Machines provisioned will be tagged with key ``provisioner`` containing the value specified.
@@ -104,7 +114,7 @@ by/from different sources / users.
 ## Contributors
 
  - [Sean Omera](https://github.com/someara) - Opscode
- - [Eric Saxby](https://github.com/sax) - ModCloth
+ - [Eric Saxby](https://github.com/sax) - Wanelo
  - [Stephen Lauck](https://github.com/stephenlauck) - ModCloth
 
 ## Bootstrap template for smartos
