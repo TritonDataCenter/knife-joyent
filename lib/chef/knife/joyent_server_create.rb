@@ -51,6 +51,13 @@ class Chef
         :proc => lambda { |o| JSON.parse(o) },
         :default => {}
 
+      option :networks,
+        :short => "-w NETWORKS",
+        :long => "--networks NETWORKS",
+        :description => "Comma separated list of networks to attach (currently requires API version >= 7.0 in knife.rb)",
+        :proc => lambda { |n| n.split(/[\s,]+/)},
+        :default => nil
+
       option :private_network,
         :long => "--private-network",
         :description => "Use the private IP for bootstrapping rather than the public IP",
@@ -129,15 +136,11 @@ class Chef
 
         validate_server_name
 
-        node_name = config[:chef_node_name] || config[:server_name]
+        @node_name = config[:chef_node_name] || config[:server_name]
 
-        puts ui.color("Creating machine #{node_name}", :cyan)
+        puts ui.color("Creating machine #{@node_name}", :cyan)
 
-        server = connection.servers.create({
-          :name => node_name,
-          :dataset => config[:dataset],
-          :package => config[:package]
-        }.merge(joyent_metadata))
+        server = connection.servers.create(server_creation_options)
 
         puts ui.color("Waiting for Server to be Provisioned", :magenta)
         server.wait_for { print "."; ready? }
@@ -164,7 +167,7 @@ class Chef
             tags << k
             tags << v
           end
-          puts ui.color("Updated tags for #{node_name}", :cyan)
+          puts ui.color("Updated tags for #{@node_name}", :cyan)
           puts ui.list(tags, :uneven_columns_across, 2)
         else
           puts ui.color("No user defined in knife config for provision tagging -- continuing", :magenta)
@@ -262,6 +265,16 @@ class Chef
       end
 
       private
+
+      def server_creation_options
+        o = {
+            :name => @node_name,
+            :dataset => config[:dataset],
+            :package => config[:package]
+        }.merge!(joyent_metadata)
+        o.merge!(:networks => config[:networks]) if config[:networks]
+        o
+      end
 
       def validate_server_name
         # add some validation here ala knife-ec2

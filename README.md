@@ -25,6 +25,7 @@ Currently available commands:
     knife joyent key add -f <keyfile> -k <name>
     knife joyent key delete <name>
     knife joyent key list
+    knife joyent network list
     knife joyent server create (options)
     knife joyent server delete <server_id>
     knife joyent server list <options>
