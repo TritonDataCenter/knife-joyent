@@ -40,6 +40,11 @@ class Chef
             :long => "--joyent-api-url JOYENT_API_URL",
             :description => "Joyent API URL",
             :proc => Proc.new {|key| Chef::Config[:knife][:joyent_api_url] = key }
+
+          option :joyent_version,
+            :long => "--joyent-api-version JOYENT_API_VERSION",
+            :description => "Joyent API version",
+            :proc => Proc.new {|key| Chef::Config[:knife][:joyent_version] = key }
         end
       end
 
@@ -51,7 +56,8 @@ class Chef
             :joyent_password => Chef::Config[:knife][:joyent_password],
             :joyent_keyname => Chef::Config[:knife][:joyent_keyname],
             :joyent_keyfile => Chef::Config[:knife][:joyent_keyfile],
-            :joyent_url => Chef::Config[:knife][:joyent_api_url]
+            :joyent_url => Chef::Config[:knife][:joyent_api_url],
+            :joyent_version => Chef::Config[:knife][:joyent_version]
           )
         end
       end

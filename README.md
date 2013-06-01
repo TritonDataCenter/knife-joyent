@@ -74,7 +74,7 @@ or, your ssh key
     knife[:joyent_keyname] = "Name of key stored on Joyent"
     knife[:joyent_keyfile] = "/path/to/your/private/key"
 
-#### Optional
+#### Optional Configuration
 
 **joyent_api_url**
 
@@ -94,6 +94,15 @@ the form of a hash with a single level of nesting. See the
     knife[:joyent_metadata] = {
       "some_data" => "value"
     }
+
+**joyent_version**
+
+By default, knife-joyent will use the version of the Joyent Cloud API that fog prefers. This
+can be overridden in knife.rb as follows:
+
+    knife[:joyent_version] = "~7.0"
+
+Some command line options to knife-joyent subcommands may depend on the Joyent API version set.
 
 **provisioner**
 
