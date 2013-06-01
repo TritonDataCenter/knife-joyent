@@ -113,7 +113,7 @@ by/from different sources / users.
 ## Contributors
 
  - [Sean Omera](https://github.com/someara) - Opscode
- - [Eric Saxby](https://github.com/sax) - ModCloth
+ - [Eric Saxby](https://github.com/sax) - Wanelo
  - [Stephen Lauck](https://github.com/stephenlauck) - ModCloth
 
 ## Bootstrap template for smartos
