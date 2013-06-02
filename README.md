@@ -1,7 +1,7 @@
 Knife Joyent
 ===
 
-This is a [Knife](http://wiki.opscode.com/display/chef/Knife) plugin for Joyent CloudAPI. This plugin gives knife
+This is a [Knife](http://wiki.opscode.com/display/chef/Knife) plug-in for Joyent CloudAPI. This plug-in gives knife
 the ability to create, bootstrap, and manage servers on the [Joyent Public Cloud](http://www.joyentcloud.com/) as well as Cloud providers powered by Joyent's [SmartDataCenter](http://www.joyent.com/products/smartdatacenter/) product offering.
 
 For more information on Joyent CloudAPI, see: [CloudAPI Documentation](http://api.joyentcloud.com/docs)
@@ -64,20 +64,30 @@ The following options can be specified in your knife configuration file
 
 You can authenticate against CloudAPI using either:
 
-a username and password
-
-    knife[:joyent_username] = "Your Joyent CloudAPI username"
-    knife[:joyent_password] = "Your Joyent CloudAPI password"
-
-or, your ssh key
+an ssh key (recommended)
 
     knife[:joyent_username] = "Your Joyent CloudAPI username"
     knife[:joyent_keyname] = "Name of key stored on Joyent"
     knife[:joyent_keyfile] = "/path/to/your/private/key"
 
+    # Optional / not-recommended -- defaults to using ssh-agent
+    knife[:joyent_keyphrase] = "mypassphrase"
+
+or username and password
+
+    knife[:joyent_username] = "Your Joyent CloudAPI username"
+    knife[:joyent_password] = "Your Joyent CloudAPI password"
+
+When authenticating with your ssh key (which we highly recommend), knife-joyent will
+attempt to use ssh-agent to sign the request using the key configured with
+``knife[:joyent_keyname]``. If no ssh-agent is present or if the specified identity
+isn't found in the agent, you may be prompted for a pass-phrase. If you do not want
+to use an ``ssh-agent``, you may optionally configure ``knife[:joyent_passphrase]``
+to automatically unlock the key for authentication.
+
 #### Optional Configuration
 
-**joyent_api_url**
+**``joyent_api_url``**
 
 Specify a custom API endpoint, this is required if you want to specify
 where you want to provision your machines, or if you are using knife with a
@@ -86,7 +96,7 @@ provider powered by [SmartDataCenter](http://www.joyent.com/products/smartdatace
     # Defaults to https://us-west-1.api.joyentcloud.com/
     knife[:joyent_api_url] = "https://us-sw-1.api.joyentcloud.com/"
 
-**joyent_metadata**
+**``joyent_metadata``**
 
 Metadata to apply to each provisioned machine via the Metadata API. This should take
 the form of a hash with a single level of nesting. See the
@@ -96,7 +106,7 @@ the form of a hash with a single level of nesting. See the
       "some_data" => "value"
     }
 
-**joyent_version**
+**``joyent_version``**
 
 By default, knife-joyent will use the version of the Joyent Cloud API that fog prefers. This
 can be overridden in knife.rb as follows:
@@ -105,7 +115,7 @@ can be overridden in knife.rb as follows:
 
 Some command line options to knife-joyent subcommands may depend on the Joyent API version set.
 
-**provisioner**
+**``provisioner``**
 
 Machines provisioned will be tagged with key ``provisioner`` containing the value specified.
 This is useful for tracking source of provisions for accounts where machines are provisioned

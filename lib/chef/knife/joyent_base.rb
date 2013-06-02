@@ -35,6 +35,11 @@ class Chef
             :description => 'path to ssh private key for signature auth',
             :proc => Proc.new {|key| Chef::Config[:knife][:joyent_keyfile] = key }
 
+          option :joyent_keyphrase,
+            :long => '--joyent-keyphrase <passpharse>',
+            :description => 'ssh passphrase to use if no ssh-agent is present',
+            :proc => Proc.new {|key| Chef::Config[:knife][:joyent_keyphrase] = key }
+
           option :joyent_api_url,
             :short => "-L JOYENT_API_URL",
             :long => "--joyent-api-url JOYENT_API_URL",
@@ -56,8 +61,10 @@ class Chef
             :joyent_password => Chef::Config[:knife][:joyent_password],
             :joyent_keyname => Chef::Config[:knife][:joyent_keyname],
             :joyent_keyfile => Chef::Config[:knife][:joyent_keyfile],
+
             :joyent_url => Chef::Config[:knife][:joyent_api_url],
             :joyent_version => Chef::Config[:knife][:joyent_version]
+
           )
         end
       end
