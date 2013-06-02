@@ -1,5 +1,5 @@
 source "http://rubygems.org"
 
-gem "fog", :github => "livinginthepast/fog", :branch => "joyent_network_support"
+gem "fog", :github => "fog/fog", :branch => "master"
 
 gemspec
