@@ -57,16 +57,20 @@ class Chef
         @connection ||= begin
            Fog::Compute.new(
             :provider => 'Joyent',
-            :joyent_username => Chef::Config[:knife][:joyent_username],
-            :joyent_password => Chef::Config[:knife][:joyent_password],
-            :joyent_keyname => Chef::Config[:knife][:joyent_keyname],
-            :joyent_keyfile => Chef::Config[:knife][:joyent_keyfile],
+            :joyent_username => locate_config_value(:joyent_username),
+            :joyent_password => locate_config_value(:joyent_password),
+            :joyent_keyname => locate_config_value(:joyent_keyname),
+            :joyent_keyfile => locate_config_value(:joyent_keyfile),
 
-            :joyent_url => Chef::Config[:knife][:joyent_api_url],
-            :joyent_version => Chef::Config[:knife][:joyent_version]
-
+            :joyent_url => locate_config_value(:joyent_api_url),
+            :joyent_version => locate_config_value(:joyent_version)
           )
         end
+      end
+
+      def locate_config_value(key)
+        key = key.to_sym
+        config[key] || Chef::Config[:knife][key]
       end
 
       def msg_pair(label, value = nil)

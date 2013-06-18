@@ -1,6 +1,10 @@
 knife-joyent Changelog
 ===
 
+## 0.3.1 (master)
+
+- GH-53 Command line arguments now properly takes precidense over config defined in knife.rb
+
 ## 0.3.0
 
 - GH-49 Network api support
