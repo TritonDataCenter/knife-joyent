@@ -54,6 +54,10 @@ class Chef
       end
 
       def connection
+        unless Chef::Config[:knife][:joyent_verify_peer]
+          Excon.defaults[:ssl_verify_peer] = false
+        end
+
         @connection ||= begin
            Fog::Compute.new(
             :provider => 'Joyent',
