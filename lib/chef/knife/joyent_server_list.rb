@@ -43,7 +43,10 @@ class Chef
           servers << s.ips.join(" ")
           servers << "#{s.memory/1024} GB".to_s
           servers << "#{s.disk/1024} GB".to_s
-          servers << s.tags.map { |k, v| "#{k}:#{v}" }.join(' ')
+
+          if (servers.tags rescue nil)
+            servers << s.tags.map { |k, v| "#{k}:#{v}" }.join(' ')
+          end
         end
 
         puts ui.list(servers, :uneven_columns_across, 9)
