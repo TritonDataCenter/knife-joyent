@@ -115,6 +115,11 @@ can be overridden in knife.rb as follows:
 
 Some command line options to knife-joyent subcommands may depend on the Joyent API version set.
 
+**``joyent_verify_peer``**
+
+Set to false to Disable SSL Cert verification, required if the CloudAPI instance
+uses a self-signed cert.
+
 **``provisioner``**
 
 Machines provisioned will be tagged with key ``provisioner`` containing the value specified.

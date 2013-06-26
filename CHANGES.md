@@ -3,6 +3,7 @@ knife-joyent Changelog
 
 ## 0.3.1 (master)
 
+- GH-55 Allow disabling SSL certificate verification + tags compatibility for SDC 6.5
 - GH-53 Command line arguments now properly takes precidense over config defined in knife.rb
 
 ## 0.3.0
