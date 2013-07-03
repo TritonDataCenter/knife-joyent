@@ -54,7 +54,7 @@ class Chef
       end
 
       def connection
-        if (Chef::Config[:knife][:joyent_verify_peer] rescue nil)
+        if (Chef::Config[:knife][:joyent_verify_peer] == false)
           Excon.defaults[:ssl_verify_peer] = false
         end
 

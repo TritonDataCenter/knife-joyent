@@ -3,6 +3,7 @@ knife-joyent Changelog
 
 ## 0.3.2 (master)
 
+- GH-55 ssl_verify_peer setting now only accepts ``false`` for disabling cert verification.
 
 ## 0.3.1
 

@@ -117,8 +117,8 @@ Some command line options to knife-joyent subcommands may depend on the Joyent A
 
 **``joyent_verify_peer``**
 
-Set to false to Disable SSL Cert verification, required if the CloudAPI instance
-uses a self-signed cert.
+Set to ``false`` to Disable SSL Certificate verification, required if the CloudAPI instance
+uses a self-signed cert. (Default: ``true``)
 
 **``provisioner``**
 
