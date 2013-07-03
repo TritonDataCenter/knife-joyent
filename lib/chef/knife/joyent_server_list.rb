@@ -46,6 +46,8 @@ class Chef
 
           if (servers.tags rescue nil)
             servers << s.tags.map { |k, v| "#{k}:#{v}" }.join(' ')
+          else
+            servers << "No Tags"
           end
         end
 
