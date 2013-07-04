@@ -1,7 +1,7 @@
 knife-joyent Changelog
 ===
 
-## 0.3.2 (master)
+## 0.3.2
 
 - GH-55 ssl_verify_peer setting now only accepts ``false`` for disabling cert verification.
 - GH-37 Fixes a formatting issue when there are servers without tags
