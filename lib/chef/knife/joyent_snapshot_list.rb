@@ -31,7 +31,7 @@ class Chef
           when "success" then
             ui.color(s.state, :green)
           else
-            ui.color(s.state, :red)
+            ui.color(s.state.to_s, :red)
           end
           snapshots << s.created.to_s
         end
