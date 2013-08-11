@@ -256,10 +256,8 @@ class Chef
         if server_ips.count === 1
           server_ips.first
         else
-          if config[:private_network]
+          if server_ips.all? {|ip| is_private(ip)} || config[:private_network]
             server_ips.find{|ip| is_private(ip)}
-          elsif server_ips.all? {|ip| is_private(ip)}
-            server_ips.first
           else
             server_ips.find{|ip| not is_private(ip)}
           end
