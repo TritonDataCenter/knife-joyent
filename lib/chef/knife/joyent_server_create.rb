@@ -187,6 +187,7 @@ class Chef
 
         puts ui.color("Waiting for SSH to come up on: #{bootstrap_ip}", :cyan)
         tcp_test_ssh(bootstrap_ip)
+        sleep 10
 
         bootstrap_for_node(server, bootstrap_ip).run
 
