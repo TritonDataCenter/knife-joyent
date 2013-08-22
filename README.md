@@ -53,7 +53,7 @@ The following command will provision an Ubuntu 12.04 with 1GB of memory and boot
         --networks 42325ea0-eb62-44c1-8eb6-0af3e2f83abc,c8cde927-6277-49ca-82a3-741e8b23b02f \
         --image d2ba0f30-bbe8-11e2-a9a2-6bc116856d85 \
         --node-name 'cookbuntu1' \
-        --server-name 'cookbuntu1' \
+        --server-name 'cookbuntu1'
 
     Creating machine cookbuntu1
     Waiting for Server to be Provisioned
