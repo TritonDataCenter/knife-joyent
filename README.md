@@ -48,26 +48,30 @@ Currently available commands:
 The following command will provision an Ubuntu 12.04 with 1GB of memory and bootstrap it with chef
 
     # knife joyent server create \
-        --joyent-api-version '~7.0' \
-        --flavor "Small 1GB" \
-        --networks 42325ea0-eb62-44c1-8eb6-0af3e2f83abc,c8cde927-6277-49ca-82a3-741e8b23b02f \
-        --image d2ba0f30-bbe8-11e2-a9a2-6bc116856d85 \
-        --node-name 'cookbuntu1' \
-        --server-name 'cookbuntu1'
+    >         --joyent-api-version '~7.0' \
+    >         --flavor "Small 1GB" \
+    >         --networks 42325ea0-eb62-44c1-8eb6-0af3e2f83abc,c8cde927-6277-49ca-82a3-741e8b23b02f \
+    >         --image d2ba0f30-bbe8-11e2-a9a2-6bc116856d85 \
+    >         --node-name 'cookbuntu0' \
+    >         --server-name 'cookbuntu0'
 
-    Creating machine cookbuntu1
+    Creating machine cookbuntu0
     Waiting for Server to be Provisioned
-    ......................
-    Bootstrap IP Address 165.225.150.195
+    ....................
+    Bootstrap IP Address 165.225.150.239
     No user defined in knife config for provision tagging -- continuing
     Created machine:
-    ID: ecd7c515-8079-41d9-a04a-0c5a1d93a2da
-    Name: cookbuntu1
+    ID: 9cdf6324-9769-4134-a7a8-a575c7dfcc13
+    Name: cookbuntu0
     State: running
     Type: virtualmachine
     Dataset: sdc:jpc:ubuntu-12.04:2.4.2
-    IPs: 165.225.150.195
+    IPs: 165.225.150.239 10.12.29.210
     Waiting for server to fully initialize...
+    Waiting for SSH to come up on: 165.225.150.239
+    SSHD accepting connections on 165.225.150.239: banner is SSH-2.0-OpenSSH_5.9p1 Debian-5ubuntu1
+
+    Bootstrapping Chef on 165.225.150.239
     ...
 
 Please see ``knife joyent server create --help`` for more options
