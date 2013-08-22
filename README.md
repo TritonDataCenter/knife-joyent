@@ -68,6 +68,7 @@ The following command will provision an Ubuntu 12.04 with 1GB of memory and boot
     Dataset: sdc:jpc:ubuntu-12.04:2.4.2
     IPs: 165.225.150.195
     Waiting for server to fully initialize...
+    ...
 
 Please see ``knife joyent server create --help`` for more options
 
