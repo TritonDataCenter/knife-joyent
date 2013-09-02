@@ -44,7 +44,7 @@ class Chef
           servers << "#{s.memory/1024} GB".to_s
           servers << "#{s.disk/1024} GB".to_s
 
-          if (servers.tags rescue nil)
+          if (s.tags rescue nil)
             servers << s.tags.map { |k, v| "#{k}:#{v}" }.join(' ')
           else
             servers << "No Tags"
