@@ -20,7 +20,7 @@ class Chef
       option :server_name,
         :short => "-S NAME",
         :long => "--server-name <name>",
-        :description => "The Joyent server name"
+        :description => "The Joyent server name (may contain letters, numbers, dashes, and periods)"
 
       option :chef_node_name,
         :short => "-N NAME",
