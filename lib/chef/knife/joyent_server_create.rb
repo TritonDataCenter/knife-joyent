@@ -64,6 +64,12 @@ class Chef
         :boolean => true,
         :default => false
 
+      option :tags,
+        :long => "--tags JSON",
+        :description => "JSON-encoded {key:value} pairs tag server with",
+        :proc => Proc.new { |m| JSON.parse(m) },
+        :default => nil
+
       option :ssh_user,
         :short => "-x USERNAME",
         :long => "--ssh-user USERNAME",
@@ -155,15 +161,23 @@ class Chef
         Chef::Log.debug("Bootstrap IP Address #{bootstrap_ip}")
         puts "\n"
         puts ui.color("Bootstrap IP Address #{bootstrap_ip}", :cyan)
+
+        if config[:tags]
+          tags = [ ui.color('Name', :bold), ui.color('Value', :bold) ]
+
+          server.add_tags(config[:tags]).each do |k,v|
+            tags << k
+            tags << v
+          end
+
+          puts ui.color("Updated tags for #{@node_name}", :cyan)
+          puts ui.list(tags, :uneven_columns_across, 2)
+        end
+
         if Chef::Config[:knife][:provisioner]
+          tags = [ ui.color('Name', :bold), ui.color('Value', :bold) ]
           # tag the provision with 'provisioner'
-          tagkey = 'provisioner'
-          tagvalue = Chef::Config[:knife][:provisioner]
-          tags = [
-            ui.color('Name', :bold),
-            ui.color('Value', :bold),
-          ]
-          server.add_tags({tagkey => tagvalue}).each do |k, v|
+          server.add_tags({'provisioner' => Chef::Config[:knife][:provisioner]}).each do |k, v|
             tags << k
             tags << v
           end
@@ -180,6 +194,7 @@ class Chef
         msg_pair("Type", server.type)
         msg_pair("Dataset", server.dataset)
         msg_pair("IPs", server.ips.join(" "))
+        msg_pair("Tags", config[:tags]) if config[:tags]
         msg_pair("JSON Attributes",config[:json_attributes]) unless config[:json_attributes].empty?
 
         puts ui.color("Waiting for server to fully initialize...", :cyan)
