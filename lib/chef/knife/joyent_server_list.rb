@@ -15,6 +15,7 @@ class Chef
           ui.color('State', :bold),
           ui.color('Type', :bold),
           ui.color('Image', :bold),
+          ui.color('Flavor', :bold),
           ui.color('IPs', :bold),
           ui.color('      RAM', :bold),
           ui.color('    Disk', :bold),
@@ -40,6 +41,7 @@ class Chef
 
           servers << s.type
           servers << s.dataset
+          servers << s.attributes["package"] || 'Unknown'
           servers << s.ips.join(",")
           servers << "#{sprintf "%6.2f", s.memory/1024.0} GB".to_s
           servers << "#{sprintf "%5.0f",   s.disk/1024} GB".to_s
@@ -51,7 +53,7 @@ class Chef
           end
         end
 
-        puts ui.list(servers, :uneven_columns_across, 9)
+        puts ui.list(servers, :uneven_columns_across, 10)
       end
     end
   end
