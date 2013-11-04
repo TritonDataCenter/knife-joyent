@@ -41,19 +41,24 @@ class Chef
 
           servers << s.type
           servers << s.dataset
-          servers << s.attributes["package"] || 'Unknown'
+          servers << (s.respond_to?(:attributes) ? s.attributes["package"] : 'unknown')
           servers << s.ips.join(",")
-          servers << "#{sprintf "%6.2f", s.memory/1024.0} GB".to_s
-          servers << "#{sprintf "%5.0f",   s.disk/1024} GB".to_s
+          servers << "#{sprintf "%6.2f", s.memory/1024.0} GB"
+          servers << "#{sprintf "%5.0f", s.disk/1024} GB"
+
 
           if (s.tags rescue nil)
-            servers << s.tags.map { |k, v| "#{k}:#{v}" }.join(' ')
+            servers << (show_tags? ? s.tags.map { |k, v| "#{k}:#{v}" }.join(' ') : "")
           else
             servers << "No Tags"
           end
         end
 
         puts ui.list(servers, :uneven_columns_across, 10)
+      end
+
+      def show_tags?
+        !ENV['SHOW_TAGS'].nil?
       end
     end
   end
