@@ -28,8 +28,10 @@ module KnifeJoyent
           specs.each do |ul|
             lis = ul.css("span").map(&:content)
             # grab last two <li> elements in each <ul class="full-spec"> block
-            cost, flavor = lis[-2].gsub(/^\$/, ''), lis[-1]
+            os, cost, flavor = lis[-3], lis[-2].gsub(/^\$/, ''), lis[-1]
             next if cost == "N/A"
+            next if flavor =~ /kvm/ && os !~ /linux/i
+
             mappings[flavor] = cost.to_f
           end
 

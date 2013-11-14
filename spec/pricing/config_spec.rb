@@ -8,7 +8,8 @@ describe KnifeJoyent::Pricing::Config do
     let(:config) { KnifeJoyent::Pricing::Config.new() }
 
     let(:prices) { { "g3-standard-48-smartos" => 1.536,
-                     "g3-standard-0.625-smartos" => 0.02 } }
+                     "g3-standard-0.625-smartos" => 0.02,
+                     "g3-standard-30-kvm" => 0.960 } }
 
     def verify
       prices.keys.each do |flavor|
