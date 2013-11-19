@@ -19,7 +19,7 @@ class Chef
 
       option :server_name,
         :short => "-S NAME",
-        :long => "--server-name <name>",
+        :long => "--server-name NAME",
         :description => "The Joyent server name (may contain letters, numbers, dashes, and periods)"
 
       option :chef_node_name,
@@ -103,6 +103,13 @@ class Chef
         :description => "Disable host key verification",
         :boolean => true,
         :default => false
+
+      option :ssh_gateway,
+        :short => "-w GATEWAY",
+        :long => "--ssh-gateway GATEWAY",
+        :description => "The ssh gateway server",
+        :proc => Proc.new { |key| Chef::Config[:knife][:ssh_gateway] = key }
+
 
       def is_linklocal(ip)
         linklocal = IPAddr.new "169.254.0.0/16"
@@ -238,9 +245,6 @@ class Chef
         Chef::Log.debug("Bootstrap ssh_user = #{config[:ssh_user]}")
         bootstrap.config[:ssh_user] = config[:ssh_user]
 
-        Chef::Log.debug("Bootstrap identity_file = #{config[:identity_file]}")
-        bootstrap.config[:identity_file] = config[:identity_file]
-
         Chef::Log.debug("Bootstrap chef_node_name = #{config[:chef_node_name]}")
         bootstrap.config[:chef_node_name] = config[:chef_node_name] || server.id
 
@@ -258,6 +262,13 @@ class Chef
 
         Chef::Log.debug("Bootstrap no_host_key_verify = #{config[:no_host_key_verify]}")
         bootstrap.config[:no_host_key_verify] = config[:no_host_key_verify]
+
+        Chef::Log.debug("Bootstrap identity_file = #{config[:identity_file]}")
+        bootstrap.config[:identity_file] = config[:identity_file]
+
+        Chef::Log.debug("Bootstrap ssh_gateway= #{config[:ssh_gateway]}")
+        bootstrap.config[:ssh_gateway] = config[:ssh_gateway]
+
 
         Chef::Log.debug("Bootstrap json_attributes = #{config[:json_attributes]}")
         bootstrap.config[:first_boot_attributes] = config[:json_attributes]
@@ -296,7 +307,7 @@ class Chef
         # add some validation here ala knife-ec2
         unless config[:server_name] || config[:chef_node_name]
           ui.error("You have not provided a valid server or node name.")
-          show_usage
+          puts show_usage
           exit 1
         end
       end
