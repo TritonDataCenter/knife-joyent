@@ -48,12 +48,12 @@ Currently available commands:
 The following command will provision an Ubuntu 12.04 with 1GB of memory and bootstrap it with chef
 
     # knife joyent server create \
-    >         --joyent-api-version '~7.0' \
-    >         --flavor "Small 1GB" \
-    >         --networks 42325ea0-eb62-44c1-8eb6-0af3e2f83abc,c8cde927-6277-49ca-82a3-741e8b23b02f \
-    >         --image d2ba0f30-bbe8-11e2-a9a2-6bc116856d85 \
-    >         --node-name 'cookbuntu0' \
-    >         --server-name 'cookbuntu0'
+        --joyent-api-version '~7.0' \
+        --flavor "Small 1GB" \
+        --networks 42325ea0-eb62-44c1-8eb6-0af3e2f83abc,c8cde927-6277-49ca-82a3-741e8b23b02f \
+        --image d2ba0f30-bbe8-11e2-a9a2-6bc116856d85 \
+        --node-name 'cookbuntu0' \
+        --server-name 'cookbuntu0'
 
     Creating machine cookbuntu0
     Waiting for Server to be Provisioned
