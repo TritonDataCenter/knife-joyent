@@ -110,9 +110,18 @@ to automatically unlock the key for authentication.
 
 **``joyent_api_url``**
 
-Specify a custom API endpoint, this is required if you want to specify
-where you want to provision your machines, or if you are using knife with a
-provider powered by [SmartDataCenter](http://www.joyent.com/products/smartdatacenter/).
+Specifies a custom CloudAPI endpoint, this is required if you want to manage
+machines located in another datacenter or if you want to interface with any CloudAPI 
+instance powered by [SmartDataCenter](http://www.joyent.com/products/smartdatacenter/).
+
+Defaults to us-west-1
+
+Available datacenters (currently) are:
+
+    https://eu-ams-1.api.joyentcloud.com
+    https://us-west-1.api.joyentcloud.com
+    https://us-sw-1.api.joyentcloud.com
+    https://us-east-1.api.joyentcloud.com
 
     # Defaults to https://us-west-1.api.joyentcloud.com/
     knife[:joyent_api_url] = "https://us-sw-1.api.joyentcloud.com/"
