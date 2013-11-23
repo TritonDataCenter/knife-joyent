@@ -21,15 +21,15 @@ module KnifeJoyent
         parse_html_document Nokogiri::HTML(File.read(filename))
       end
 
-      def monthly_price_for(flavor_name)
+      def monthly_price_for_flavor(flavor_name)
         self[flavor_name] ? sprintf("$%.2f", self[flavor_name] * HOURS_PER_MONTH) : ""
       end
 
-      def monthly_formatted_price_for(flavor, width = 10)
-        self[flavor] ? formatted_price(self[flavor] * HOURS_PER_MONTH, width) : ""
+      def monthly_formatted_price_for_flavor(flavor, width = 10)
+        self[flavor] ? formatted_price_for_value(self[flavor] * HOURS_PER_MONTH, width) : ""
       end
 
-      def formatted_price(value, width = 10)
+      def formatted_price_for_value(value, width = 10)
         sprintf("%#{width}s", currency_format(sprintf("$%.2f", value)))
       end
 

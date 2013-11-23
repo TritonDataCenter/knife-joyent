@@ -22,7 +22,7 @@ class Chef
           flavor_list << "#{sprintf "%6.2f", flavor.memory/1024.0} GB"
           flavor_list << "#{sprintf "%6.0f", flavor.disk/1024.0} GB"
           flavor_list << "#{sprintf "%5.0f", flavor.swap/1024.0} GB"
-          flavor_list << pricing.monthly_formatted_price_for(flavor.name.to_s, 10)
+          flavor_list << pricing.monthly_formatted_price_for_flavor(flavor.name.to_s, 10)
         end
 
         puts ui.list(flavor_list, :uneven_columns_across, 5)

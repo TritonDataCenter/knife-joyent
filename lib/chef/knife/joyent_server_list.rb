@@ -53,7 +53,7 @@ class Chef
           servers << s.ips.join(",")
           servers << "#{sprintf "%6.2f", s.memory/1024.0} GB"
           servers << "#{sprintf "%5.0f", s.disk/1024} GB"
-          servers << pricing.monthly_formatted_price_for(flavor, price_column_width)
+          servers << pricing.monthly_formatted_price_for_flavor(flavor, price_column_width)
 
           total_cost += (pricing[flavor] || 0)
 
@@ -66,7 +66,7 @@ class Chef
 
         (columns - 3).times{servers << ""}
         servers << "   Total"
-        servers << pricing.formatted_price(total_cost * pricing.class::HOURS_PER_MONTH,
+        servers << pricing.formatted_price_for_value(total_cost * pricing.class::HOURS_PER_MONTH,
                                            price_column_width)
 
         puts ui.list(servers, :uneven_columns_across, columns)
