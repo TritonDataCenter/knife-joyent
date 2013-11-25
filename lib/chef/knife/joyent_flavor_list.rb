@@ -10,11 +10,11 @@ class Chef
 
       def run
         flavor_list = [
-            ui.color('Name', :bold),
-            ui.color('      RAM', :bold),
-            ui.color('     Disk', :bold),
-            ui.color('    Swap', :bold),
-            ui.color('$ Per Month', :bold),
+          ui.color('Name', :bold),
+          ui.color('      RAM', :bold),
+          ui.color('     Disk', :bold),
+          ui.color('    Swap', :bold),
+          ui.color('$ Per Month', :bold),
         ]
 
         self.connection.flavors.sort_by(&:memory).each do |flavor|

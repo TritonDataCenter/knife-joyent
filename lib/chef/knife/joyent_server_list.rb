@@ -13,17 +13,17 @@ class Chef
         price_column_width = 11
 
         servers = [
-            ui.color('ID', :bold),
-            ui.color('Name', :bold),
-            ui.color('State', :bold),
-            ui.color('Type', :bold),
-            ui.color('Image', :bold),
-            ui.color('Flavor', :bold),
-            ui.color('IPs', :bold),
-            ui.color('      RAM', :bold),
-            ui.color('    Disk', :bold),
-            ui.color('Price $/Month'),
-            ui.color('Tags', :bold)
+          ui.color('ID', :bold),
+          ui.color('Name', :bold),
+          ui.color('State', :bold),
+          ui.color('Type', :bold),
+          ui.color('Image', :bold),
+          ui.color('Flavor', :bold),
+          ui.color('IPs', :bold),
+          ui.color('      RAM', :bold),
+          ui.color('    Disk', :bold),
+          ui.color('Price $/Month'),
+          ui.color('Tags', :bold)
         ]
 
         total_cost = 0
