@@ -42,6 +42,13 @@ Currently available commands:
     knife joyent tag delete <server_id> <tag>
     knife joyent tag delete <server_id> -A
     knife joyent tag list <server_id>
+    knife joyent server fw enable <server_id>
+    knife joyent server fw disable <server_id>
+    knife joyent fw get <fwrule_id>
+    knife joyent fw create (options)
+    knife joyent fw list <server_id>
+    knife joyent fw update <rule_id> (options)
+    knife joyent fw delete <rule_id> (options)
 
 ## Example Usage
 
@@ -111,7 +118,7 @@ to automatically unlock the key for authentication.
 **``joyent_api_url``**
 
 Specifies a custom CloudAPI endpoint, this is required if you want to manage
-machines located in another datacenter or if you want to interface with any CloudAPI 
+machines located in another datacenter or if you want to interface with any CloudAPI
 instance powered by [SmartDataCenter](http://www.joyent.com/products/smartdatacenter/).
 
 Defaults to us-west-1

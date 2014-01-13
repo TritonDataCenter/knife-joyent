@@ -82,6 +82,19 @@ class Chef
         config[key] || Chef::Config[:knife][key]
       end
 
+      def output_error_response(res)
+        if (res.body['message'])
+          ui.error ui.color(res.body["message"], :white)
+        end
+
+        if (res.body["errors"])
+          errors = res.body["errors"]
+          errors.each do |e|
+            ui.error("[#{e["field"]}] #{e["message"]}")
+          end
+        end
+      end
+
       def msg_pair(label, value = nil)
         if value && !value.empty?
           puts "#{ui.color(label, :cyan)}: #{value}"
