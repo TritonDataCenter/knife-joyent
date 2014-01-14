@@ -42,6 +42,8 @@ Currently available commands:
     knife joyent tag delete <server_id> <tag>
     knife joyent tag delete <server_id> -A
     knife joyent tag list <server_id>
+
+    # requires joyent_version 7.1+
     knife joyent server fw enable <server_id>
     knife joyent server fw disable <server_id>
     knife joyent fw get <fwrule_id>
@@ -148,7 +150,7 @@ the form of a hash with a single level of nesting. See the
 By default, knife-joyent will use the version of the Joyent Cloud API that fog prefers. This
 can be overridden in knife.rb as follows:
 
-    knife[:joyent_version] = "~7.0"
+    knife[:joyent_version] = "~7.1"
 
 Some command line options to knife-joyent subcommands may depend on the Joyent API version set.
 

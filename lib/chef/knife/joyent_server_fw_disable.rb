@@ -16,14 +16,15 @@ class Chef
 
         id = name_args.first
 
+        path = "/my/machines/#{id}"
         res = self.connection.request(
           :method => "POST",
-          :path => "/my/machines/#{id}",
-          :body => { :action => "disable_firewall"}
+          :path => path,
+          :query => {"action" => "disable_firewall"}
         )
 
-        if (res.status === 202)
-          ui.color(:cyan, "FIrewall Disabled for server #{id}")
+        if (res.status == 202)
+          puts ui.color("Firewall Disabled for server #{id}", :cyan)
         else
           output_error_response(res)
         end
