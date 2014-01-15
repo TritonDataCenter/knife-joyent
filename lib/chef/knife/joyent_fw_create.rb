@@ -42,6 +42,8 @@ class Chef
           msg_pair "RULE", r["rule"]
           msg_pair "ENABLED", (r["enabled"] ? ui.color("✓ YES", :cyan) : "✗ NO")
         end
+      rescue => e
+        output_error(e)
       end
     end
   end

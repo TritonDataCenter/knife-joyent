@@ -20,6 +20,8 @@ class Chef
         end
 
         puts ui.list(keys, :uneven_columns_across, 2)
+      rescue => e
+        output_error(e)
       end
     end
   end
