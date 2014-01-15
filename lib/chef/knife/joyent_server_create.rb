@@ -213,23 +213,8 @@ class Chef
 
         bootstrap_for_node(server, bootstrap_ip).run
 
-      rescue Excon::Errors::Conflict => e
-        if e.response && e.response.body.kind_of?(String)
-          error = ::Fog::JSON.decode(e.response.body)
-          print ui.error(error['message'])
-          if error.key?('errors') && error['errors'].kind_of?(Array)
-            error['errors'].each do |err|
-              print ui.error " * [#{err['field']}] #{err['message']}"
-            end
-          end
-          exit 1
-        else
-          puts ui.error(e.message)
-          exit 1
-        end
-
       rescue => e
-        puts ui.error('Unexpected Error Occured:' + e.inspect)
+        output_error(e)
         exit 1
       end
 

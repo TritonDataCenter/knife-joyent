@@ -41,6 +41,8 @@ class Chef
           puts ui.error("Metadata update failed")
           exit 1
         end
+      rescue => e
+        output_error(e)
       end
     end
   end

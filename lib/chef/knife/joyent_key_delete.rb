@@ -28,6 +28,9 @@ class Chef
 
         puts ui.color('Deleted key: '+keyname, :cyan)
         exit 0
+      rescue => e
+        output_error(e)
+        exit 1
       end
     end
   end

@@ -31,6 +31,9 @@ class Chef
       rescue Excon::Errors::NotFound => e
         puts ui.error("Server #{server} not found")
         exit 1
+
+      rescue => e
+        output_error(e)
       end
     end
   end

@@ -30,9 +30,11 @@ class Chef
         if res.status == 204
           ui.info "Rule #{id} Deleted."
         else
-          self.output_error_response(res)
+          self.output_error(res)
         end
 
+      rescue => e
+        output_error(e)
       end
     end
   end

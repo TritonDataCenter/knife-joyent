@@ -36,6 +36,8 @@ class Chef
           exit 1
         end
       end
+    rescue => e
+      output_error(e)
     end
   end
 end

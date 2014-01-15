@@ -22,6 +22,8 @@ class Chef
 
         puts ui.list(networks, :uneven_columns_across, 3)
         exit 0
+      rescue => e
+        output_error(e)
       end
     end
   end

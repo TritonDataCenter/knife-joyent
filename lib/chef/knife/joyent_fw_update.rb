@@ -35,7 +35,7 @@ class Chef
         )
 
         unless res.status == 200
-          output_error_response(res)
+          output_error(res)
         else
           r = res.body
 

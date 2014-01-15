@@ -29,6 +29,9 @@ class Chef
           puts ui.error("Reboot server failed")
           exit 1
         end
+
+      rescue => e
+        output_error(e)
       end
     end
   end

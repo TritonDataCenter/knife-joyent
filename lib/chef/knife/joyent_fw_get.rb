@@ -28,7 +28,7 @@ class Chef
         ]
 
         if (res.status == 422)
-          output_error_response(res)
+          output_error(res)
         else
           r = res.body
           rules << r["id"]
@@ -36,7 +36,6 @@ class Chef
           rules << r["rule"]
           ui.list(rules, :uneven_columns_across, 3)
         end
-
       end
     end
   end

@@ -26,7 +26,7 @@ class Chef
         if (res.status == 202)
           puts ui.color("Firewall Disabled for server #{id}", :cyan)
         else
-          output_error_response(res)
+          output_error(res)
         end
       end
     end

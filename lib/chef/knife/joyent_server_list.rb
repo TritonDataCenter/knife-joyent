@@ -70,6 +70,8 @@ class Chef
                                            price_column_width)
 
         puts ui.list(servers, :uneven_columns_across, columns)
+      rescue => e
+        output_error(e)
       end
 
       def show_tags?

@@ -58,6 +58,8 @@ class Chef
           puts ui.list(tags, :uneven_columns_across, 2)
         end
         exit 0
+      rescue => e
+        output_error(e)
       end
     end
   end

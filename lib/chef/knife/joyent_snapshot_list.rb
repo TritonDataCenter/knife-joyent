@@ -37,8 +37,8 @@ class Chef
         end
 
         puts ui.list(snapshots, :uneven_columns_across, 3)
-      rescue Fog::Compute::Joyent::Errors::NotFound
-        puts ui.error("Server #{server} not found.")
+      rescue e
+        output_error(e)
       end
     end
   end

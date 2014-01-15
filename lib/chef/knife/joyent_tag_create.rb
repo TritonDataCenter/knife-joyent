@@ -31,8 +31,8 @@ class Chef
         puts ui.color("Updated tags for #{server}", :cyan)
         puts ui.list(tags, :uneven_columns_across, 2)
         exit 0
-      rescue Excon::Errors::NotFound => e
-        puts ui.error("Server #{server} not found")
+      rescue => e
+        output_error(e)
         exit 1
       end
     end

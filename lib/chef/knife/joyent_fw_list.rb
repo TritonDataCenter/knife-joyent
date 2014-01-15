@@ -34,8 +34,9 @@ class Chef
             rules << (r["enabled"] ? ui.color("✓", :cyan) : "✗")
             rules << r["rule"]
           end
+          ui.output ui.list(rules, :uneven_columns_across, 3)
         else
-          output_error_response(res)
+          output_error(res)
         end
       end
     end

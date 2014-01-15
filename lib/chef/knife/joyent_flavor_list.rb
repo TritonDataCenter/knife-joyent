@@ -26,6 +26,8 @@ class Chef
         end
 
         puts ui.list(flavor_list, :uneven_columns_across, 5)
+      rescue => e
+        output_error(e)
       end
     end
   end

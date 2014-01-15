@@ -26,6 +26,9 @@ class Chef
         end
 
         puts ui.list(images, :uneven_columns_across, 5)
+      rescue => e
+        output_error(e)
+
       end
     end
   end

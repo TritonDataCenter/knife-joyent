@@ -48,7 +48,8 @@ class Chef
         end
 
         puts ui.color('Created key: '+keyname, :cyan)
-        exit 0
+      rescue => e
+        output_error(e)
       end
     end
   end
