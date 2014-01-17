@@ -16,7 +16,15 @@ class Chef
       option :state,
         :long => "--state <all/active/unactivated/disabled>",
         :default => "active",
-        :description => "filter images by state (default: active"
+        :description => "filter images by state (default: active)"
+
+      option :owner,
+        :long => "--owner <owner_uuid>",
+        :description => "filter images by owner (default: none)"
+
+      option :type,
+        :long => "--type <smartmachine/virtualmachine>",
+        :description => "filter images by image type (default: all)"
 
       def run
         images = [
@@ -31,6 +39,8 @@ class Chef
         query = {}
         query[:public] = config[:public] if config[:public]
         query[:state] = config[:state] if config[:state]
+        query[:owner] = config[:owner] if config[:owner]
+        query[:type] = config[:type] if config[:type]
 
         res = self.connection.request(
           :method => "GET",
