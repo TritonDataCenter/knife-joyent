@@ -1,3 +1,5 @@
+# encoding: UTF-8
+#
 require 'chef/knife/joyent_base'
 
 class Chef

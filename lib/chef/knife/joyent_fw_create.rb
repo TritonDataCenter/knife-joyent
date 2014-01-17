@@ -1,5 +1,7 @@
+# encoding: UTF-8
 require 'chef/knife/joyent_base'
 require 'pp'
+
 
 class Chef
   class Knife
