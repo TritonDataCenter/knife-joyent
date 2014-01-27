@@ -105,7 +105,7 @@ class Chef
         :default => false
 
       option :ssh_gateway,
-        :short => "-w GATEWAY",
+        :short => "-gw GATEWAY",
         :long => "--ssh-gateway GATEWAY",
         :description => "The ssh gateway server",
         :proc => Proc.new { |key| Chef::Config[:knife][:ssh_gateway] = key }
