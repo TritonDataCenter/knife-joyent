@@ -239,8 +239,8 @@ class Chef
         Chef::Log.debug("Bootstrap distro = #{config[:distro]}")
         bootstrap.config[:distro] = config[:distro]
 
-        #Chef::Log.debug("Bootstrap use_sudo = #{config[:use_sudo]}")
-        #bootstrap.config[:use_sudo] = true
+        Chef::Log.debug("Bootstrap use_sudo = #{config[:use_sudo]}")
+        bootstrap.config[:use_sudo] = true unless config[:ssh_user] == 'root'
 
         Chef::Log.debug("Bootstrap environment = #{config[:environment]}")
         bootstrap.config[:environment] = config[:environment]
