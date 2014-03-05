@@ -239,24 +239,28 @@ class Chef
         Chef::Log.debug("Bootstrap distro = #{config[:distro]}")
         bootstrap.config[:distro] = config[:distro]
 
-        Chef::Log.debug("Bootstrap use_sudo = #{config[:use_sudo]}")
-        bootstrap.config[:use_sudo] = true unless config[:ssh_user] == 'root'
+        if config[:ssh_user] == 'root'
+          bootstrap.config[:use_sudo] = false
+        else
+          bootstrap.config[:use_sudo] = true
+        end
 
-        Chef::Log.debug("Bootstrap environment = #{config[:environment]}")
+        Chef::Log.debug("Bootstrap use_sudo = #{bootstrap.config[:use_sudo]}")
+
         bootstrap.config[:environment] = config[:environment]
+        Chef::Log.debug("Bootstrap environment = #{bootstrap.config[:environment]}")
 
-        Chef::Log.debug("Bootstrap no_host_key_verify = #{config[:no_host_key_verify]}")
         bootstrap.config[:no_host_key_verify] = config[:no_host_key_verify]
+        Chef::Log.debug("Bootstrap no_host_key_verify = #{bootstrap.config[:no_host_key_verify]}")
 
-        Chef::Log.debug("Bootstrap identity_file = #{config[:identity_file]}")
         bootstrap.config[:identity_file] = config[:identity_file]
+        Chef::Log.debug("Bootstrap identity_file = #{bootstrap.config[:identity_file]}")
 
-        Chef::Log.debug("Bootstrap ssh_gateway= #{config[:ssh_gateway]}")
         bootstrap.config[:ssh_gateway] = config[:ssh_gateway]
+        Chef::Log.debug("Bootstrap ssh_gateway= #{bootstrap.config[:ssh_gateway]}")
 
-
-        Chef::Log.debug("Bootstrap json_attributes = #{config[:json_attributes]}")
         bootstrap.config[:first_boot_attributes] = config[:json_attributes]
+        Chef::Log.debug("Bootstrap json_attributes = #{bootstrap.config[:json_attributes]}")
 
         bootstrap
       end
