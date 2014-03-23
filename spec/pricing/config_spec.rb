@@ -10,7 +10,7 @@ describe KnifeJoyent::Pricing::Config do
 
   def verify
     prices.keys.each do |flavor|
-      config[flavor].should eql(prices[flavor])
+      expect(config[flavor]).to eql(prices[flavor])
     end
   end
 

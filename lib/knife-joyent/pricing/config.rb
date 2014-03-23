@@ -22,11 +22,15 @@ module KnifeJoyent
       end
 
       def monthly_price_for_flavor(flavor_name)
-        self[flavor_name] ? sprintf("$%.2f", self[flavor_name] * HOURS_PER_MONTH) : ""
+        self[flavor_name] ? sprintf("$%.2f", monthly_price(flavor_name)) : ""
+      end
+
+      def monthly_price(flavor_name)
+        (self[flavor_name] || 0) * HOURS_PER_MONTH
       end
 
       def monthly_formatted_price_for_flavor(flavor, width = 10)
-        self[flavor] ? formatted_price_for_value(self[flavor] * HOURS_PER_MONTH, width) : ""
+        self[flavor] ? formatted_price_for_value(monthly_price(flavor), width) : ""
       end
 
       def formatted_price_for_value(value, width = 10)
