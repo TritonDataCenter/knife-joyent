@@ -5,6 +5,7 @@ class Chef
     class JoyentServerList < Knife
 
       include Knife::JoyentBase
+      include Joyent::Cloud::Pricing::Helpers
 
       option :show,
         :long => '--show field1,field1,.',
@@ -89,12 +90,12 @@ class Chef
           servers << s.ips.join(",")
           servers << "#{sprintf "%6.2f", s.memory/1024.0} GB"
           servers << "#{sprintf "%5.0f", s.disk/1024} GB"
-          servers << pricing.monthly_formatted_price_for_flavor(flavor, PRICE_COLUMN_WIDTH)
+          servers << pricing.format_monthly_price(flavor, PRICE_COLUMN_WIDTH)
 
           servers << compute_node if show?(:compute_node)
           servers << s.tags.map { |k, v| "#{k}:#{v}" }.join(' ') if (show?(:tags) && (s.tags rescue nil))
 
-          total_cost += (pricing[flavor] || 0)
+          total_cost += pricing.monthly_price(flavor)
         end
 
         add_total_price(servers, total_cost)
@@ -107,8 +108,8 @@ class Chef
       def add_total_price(servers, total_cost)
         8.times { servers << "" }
         servers << "   Total"
-        servers << pricing.formatted_price_for_value(
-            total_cost * pricing.class::HOURS_PER_MONTH, PRICE_COLUMN_WIDTH)
+        servers << pricing.format_price(
+            total_cost * Joyent::Cloud::Pricing::HOURS_PER_MONTH, PRICE_COLUMN_WIDTH)
       end
 
       def show?(key)
@@ -126,6 +127,11 @@ class Chef
       def sort_by(matrix, field)
         matrix[field.to_sym] || matrix[:name]
       end
+
+      def pricing
+        @pricing ||= Joyent::Cloud::Pricing::Formatter.new(Joyent::Cloud::Pricing::Configuration.instance)
+      end
+
     end
   end
 end

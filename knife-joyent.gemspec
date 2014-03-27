@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency "fog", "~> 1.15.0"
   s.add_dependency "multi_json", "~> 1.7"
   s.add_dependency "chef", ">= 0.10.10"
+  s.add_dependency "joyent-cloud-pricing", "~> 1.0.1"
 
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'guard-rspec'
