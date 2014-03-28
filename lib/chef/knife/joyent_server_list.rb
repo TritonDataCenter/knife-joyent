@@ -5,7 +5,6 @@ class Chef
     class JoyentServerList < Knife
 
       include Knife::JoyentBase
-      include Joyent::Cloud::Pricing::Helpers
 
       option :show,
         :long => '--show field1,field1,.',
