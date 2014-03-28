@@ -58,7 +58,7 @@ class Chef
         servers << ui.color('Compute Node', :bold) if show?(:compute_node)
         servers << ui.color('Tags', :bold) if show?(:tags)
 
-        total_cost = 0
+        total_monthly_price = 0
 
         prev_compute_node = nil # only needed if sorting by compute_node
 
@@ -95,21 +95,20 @@ class Chef
           servers << compute_node if show?(:compute_node)
           servers << s.tags.map { |k, v| "#{k}:#{v}" }.join(' ') if (show?(:tags) && (s.tags rescue nil))
 
-          total_cost += pricing.monthly_price(flavor)
+          total_monthly_price += pricing.monthly_price(flavor)
         end
 
-        add_total_price(servers, total_cost)
+        add_total_price(servers, total_monthly_price)
 
         puts ui.list(servers, :uneven_columns_across, columns)
       rescue => e
         output_error(e)
       end
 
-      def add_total_price(servers, total_cost)
+      def add_total_price(servers, total_monthly_price)
         8.times { servers << "" }
         servers << "   Total"
-        servers << pricing.format_price(
-            total_cost * Joyent::Cloud::Pricing::HOURS_PER_MONTH, PRICE_COLUMN_WIDTH)
+        servers << pricing.format_price(total_monthly_price, PRICE_COLUMN_WIDTH)
       end
 
       def show?(key)
