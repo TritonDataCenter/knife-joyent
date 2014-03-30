@@ -16,9 +16,9 @@ Gem::Specification.new do |s|
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
-  s.add_dependency "fog", ">= 1.15.0"
+  s.add_dependency "fog", "~> 1.21.0"
   s.add_dependency "multi_json", "~> 1.7"
-  s.add_dependency "chef", ">= 0.10.10"
+  s.add_dependency "chef", "~> 11.6"
   s.add_dependency "joyent-cloud-pricing", ">= 1.0.3"
 
   s.add_development_dependency 'rspec'
