@@ -17,7 +17,7 @@ class Chef
       def run
         flavors = []
         self.connection.servers.each do |s|
-          flavor = s.respond_to?(:attributes) ? s.attributes["package"] : 'unknown'
+          flavor = s.package || 'unknown'
           flavors << flavor
         end
         reporter = Joyent::Cloud::Pricing::Reporter.new(Chef::Config[:knife][:reserve_pricing], flavors)
