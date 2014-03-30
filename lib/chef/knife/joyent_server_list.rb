@@ -32,8 +32,8 @@ class Chef
               end
             end,
             :price => -> (a, b) do
-              if a.attributes && b.attributes
-                pricing.monthly_price(a.attributes["package"]) <=> pricing.monthly_price(b.attributes["package"])
+              if a.package && b.package
+                pricing.monthly_price(a.package) <=> pricing.monthly_price(b.package)
               end
             end
         }
@@ -81,7 +81,7 @@ class Chef
                          ui.color('unknown', :red)
                      end
 
-          flavor = s.respond_to?(:attributes) ? s.attributes["package"] : 'unknown'
+          flavor = s.package || 'unknown'
 
           servers << s.type
           servers << s.dataset
