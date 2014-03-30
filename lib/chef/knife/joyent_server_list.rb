@@ -25,17 +25,19 @@ class Chef
       def run
 
         sort_matrix = {
-            :name => -> (a,b) { (a.name || '') <=> (b.name || '') },
-            :compute_node => -> (a, b) do
-              if a.attributes && b.attributes
-                (a.attributes["compute_node"]) <=> (b.attributes["compute_node"])
-              end
-            end,
-            :price => -> (a, b) do
-              if a.package && b.package
-                pricing.monthly_price(a.package) <=> pricing.monthly_price(b.package)
-              end
+          :name => lambda do |a, b|
+            (a.name || '') <=> (b.name || '')
+          end,
+          :compute_node => lambda do |a, b|
+            if a.attributes && b.attributes
+              (a.attributes["compute_node"]) <=> (b.attributes["compute_node"])
             end
+          end,
+          :price => lambda do |a, b|
+            if a.package && b.package
+              pricing.monthly_price(a.package) <=> pricing.monthly_price(b.package)
+            end
+          end
         }
 
         columns = 10 + num_of_extra_keys
