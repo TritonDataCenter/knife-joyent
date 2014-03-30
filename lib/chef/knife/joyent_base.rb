@@ -1,5 +1,5 @@
 require 'chef/knife'
-require_relative '../../knife-joyent/pricing'
+require 'pricing'
 
 class Chef
   class Knife
@@ -71,10 +71,6 @@ class Chef
             :joyent_version => locate_config_value(:joyent_version)
           )
         end
-      end
-
-      def pricing
-        @pricing ||= KnifeJoyent::Pricing::Config.new
       end
 
       def locate_config_value(key)
