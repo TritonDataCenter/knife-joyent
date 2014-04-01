@@ -132,6 +132,11 @@ class Chef
         end
         obj
       end
+
+      def pricing
+        @pricing ||= Joyent::Cloud::Pricing::Formatter.new(Joyent::Cloud::Pricing::Configuration.instance)
+      end
+
     end
   end
 end
