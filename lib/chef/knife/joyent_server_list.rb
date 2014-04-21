@@ -127,11 +127,6 @@ class Chef
       def sort_by(matrix, field)
         matrix[field.to_sym] || matrix[:name]
       end
-
-      def pricing
-        @pricing ||= Joyent::Cloud::Pricing::Formatter.new(Joyent::Cloud::Pricing::Configuration.instance)
-      end
-
     end
   end
 end
