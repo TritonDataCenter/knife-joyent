@@ -9,7 +9,7 @@ class Chef
       option :reserve_pricing,
              :short => '-r <file>',
              :long => '--reserve-pricing <file>',
-             :description => 'Apply reserve discounts from a YAML config (see joyent-cloud-pricing gem)',
+             :description => 'Apply custom pricing from a YAML file (see: joyent-cloud-pricing gem)',
              :proc => Proc.new { |key| Chef::Config[:knife][:reserve_pricing] = key }
 
       option :show_zones,
@@ -23,7 +23,7 @@ class Chef
              :description => 'Disable color when printing',
              :proc => Proc.new { |key| Chef::Config[:knife][:no_color] = true }
 
-      banner 'knife joyent server pricing [-r your-reserve-pricing.yml -z --no-color ...] '
+      banner 'knife joyent server pricing [-r <custom-pricing.yml>] [-z] [--no-color]'
 
       def run
         flavors = []
