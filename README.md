@@ -171,6 +171,7 @@ by/from different sources / users.
  - [Sean Omera](https://github.com/someara) - Opscode
  - [Eric Saxby](https://github.com/sax) - Wanelo
  - [Stephen Lauck](https://github.com/stephenlauck) - ModCloth
+ - [Konstantin Gredeskoul](https://github.com/kigster) - Wanelo
 
 ## Bootstrap template for smartos
 
