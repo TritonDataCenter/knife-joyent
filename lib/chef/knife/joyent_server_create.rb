@@ -110,6 +110,10 @@ class Chef
         :description => "The ssh gateway server",
         :proc => Proc.new { |key| Chef::Config[:knife][:ssh_gateway] = key }
 
+      option :ssh_init_delay,
+        :long => "--ssh-init-delay SECS",
+        :description => "Seconds to sleep after SSH starts answering on new machine",
+        :default => 10
 
       def is_linklocal(ip)
         linklocal = IPAddr.new "169.254.0.0/16"
@@ -209,7 +213,9 @@ class Chef
 
         puts ui.color("Waiting for SSH to come up on: #{bootstrap_ip}", :cyan)
         tcp_test_ssh(bootstrap_ip)
-        sleep 10
+
+        puts ui.color("Sleeping for #{config[:ssh_init_delay]} seconds", :cyan)
+        sleep config[:ssh_init_delay]
 
         bootstrap_for_node(server, bootstrap_ip).run
 
