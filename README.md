@@ -1,7 +1,7 @@
 Knife Joyent
 ===
 
-This is a [Knife](http://wiki.opscode.com/display/chef/Knife) plug-in for Joyent CloudAPI. This plug-in gives knife
+This is a [Knife](http://docs.chef.io/knife.html) plug-in for Joyent CloudAPI. This plug-in gives knife
 the ability to create, bootstrap, and manage servers on the [Joyent Public Cloud](http://www.joyentcloud.com/) as well as Cloud providers powered by Joyent's [SmartDataCenter](http://www.joyent.com/products/smartdatacenter/) product offering.
 
 For more information on Joyent CloudAPI, see: [CloudAPI Documentation](http://api.joyentcloud.com/docs)
@@ -168,7 +168,7 @@ by/from different sources / users.
 
 ## Contributors
 
- - [Sean Omera](https://github.com/someara) - Opscode
+ - [Sean Omera](https://github.com/someara) - Chef Software
  - [Eric Saxby](https://github.com/sax) - Wanelo
  - [Stephen Lauck](https://github.com/stephenlauck) - ModCloth
  - [Konstantin Gredeskoul](https://github.com/kigster) - Wanelo
