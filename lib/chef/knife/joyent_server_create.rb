@@ -262,13 +262,41 @@ class Chef
         bootstrap.config[:identity_file] = config[:identity_file]
         Chef::Log.debug("Bootstrap identity_file = #{bootstrap.config[:identity_file]}")
 
-        bootstrap.config[:ssh_gateway] = config[:ssh_gateway]
+        bootstrap.config[:ssh_gateway] = determine_ssh_gateway(bootstrap_ip)
         Chef::Log.debug("Bootstrap ssh_gateway= #{bootstrap.config[:ssh_gateway]}")
 
         bootstrap.config[:first_boot_attributes] = config[:json_attributes]
         Chef::Log.debug("Bootstrap json_attributes = #{bootstrap.config[:json_attributes]}")
 
         bootstrap
+      end
+
+      # src: https://github.com/chef/knife-ec2/blob/master/lib/chef/knife/ec2_server_create.rb#L741-L770
+      def determine_ssh_gateway
+        # ssh_gateway config takes precedence over derived value
+        if config[:ssh_gateway]
+          Chef::Log.debug("Using ssh gateway #{config[:ssh_gateway]} from knife config")
+          return config[:ssh_gateway]
+        end
+
+        ssh_proxy = Net::SSH::Config.for(hostname)[:proxy]
+        if ssh_proxy.respond_to?(:command_line_template)
+          # ssh gateway_hostname nc %h %p
+          proxy_pattern = /ssh\s+(\S+)\s+nc/
+          matchdata = proxy_pattern.match(ssh_proxy.command_line_template)
+          if matchdata.nil?
+            Chef::Log.debug("Unable to determine ssh gateway for '#{hostname}' from ssh config template: #{ssh_proxy.command_line_template}")
+            nil
+          else
+            # Return hostname extracted from command line template
+            Chef::Log.debug("Using ssh gateway #{matchdata[1]} from ssh config")
+            matchdata[1]
+          end
+        else
+          # Return nil if we cannot find an ssh_gateway
+          Chef::Log.debug("No ssh gateway found, making a direct connection")
+          nil
+        end
       end
 
       def determine_bootstrap_ip(server)
