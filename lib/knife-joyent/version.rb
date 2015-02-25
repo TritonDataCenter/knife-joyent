@@ -1,3 +1,3 @@
 module KnifeJoyent
-  VERSION = "0.4.11"
+  VERSION = "0.4.12"
 end
