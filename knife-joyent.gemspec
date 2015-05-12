@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency "fog", '~> 1.23'
   s.add_dependency "multi_json", "~> 1.7"
   s.add_dependency "joyent-cloud-pricing", ">= 1.1.0"
-  s.add_dependency 'chef', '>= 11.16.2', '< 12.1'
+  s.add_dependency 'chef', '>= 11.16.2', '< 13'
   s.add_development_dependency 'rspec'
 
   s.require_paths = ["lib"]
