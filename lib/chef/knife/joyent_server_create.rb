@@ -272,7 +272,7 @@ class Chef
       end
 
       # src: https://github.com/chef/knife-ec2/blob/master/lib/chef/knife/ec2_server_create.rb#L741-L770
-      def determine_ssh_gateway
+      def determine_ssh_gateway(hostname)
         # ssh_gateway config takes precedence over derived value
         if config[:ssh_gateway]
           Chef::Log.debug("Using ssh gateway #{config[:ssh_gateway]} from knife config")

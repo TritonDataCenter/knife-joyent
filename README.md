@@ -130,7 +130,7 @@ manage machines located in another datacenter or if you want to
 interface with any CloudAPI instance powered by
 [SmartDataCenter](http://www.joyent.com/products/smartdatacenter/).
 
-Defaults to us-west-1
+Defaults to us-sw-1
 
 Available datacenters (currently) are:
 
@@ -139,7 +139,7 @@ Available datacenters (currently) are:
     https://us-sw-1.api.joyent.com
     https://us-east-1.api.joyent.com
 
-    # Defaults to https://us-west-1.api.joyent.com/
+    # Defaults to https://us-sw-1.api.joyent.com/
     knife[:joyent_api_url] = "https://us-sw-1.api.joyent.com/"
 
 **``joyent_metadata``**

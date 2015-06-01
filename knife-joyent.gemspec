@@ -7,10 +7,11 @@ Gem::Specification.new do |s|
   s.version = KnifeJoyent::VERSION
   s.has_rdoc = true
   s.authors = ["Kevin Chan"]
-  s.email = ["kevin@joyent.com"]
-  s.homepage = "https://github.com/kevinykchan/knife-joyent"
+  s.email = ["rubygems@joyent.com"]
+  s.homepage = "https://github.com/joyent/knife-joyent"
   s.summary = "Joyent CloudAPI Support for Chef's Knife Command"
   s.description = s.summary
+  s.license = "Apache 2.0"
   s.extra_rdoc_files = ["README.md", "LICENSE"]
 
   s.files         = `git ls-files`.split("\n")
