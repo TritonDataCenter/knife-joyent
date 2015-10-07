@@ -13,7 +13,7 @@ For more information on Joyent CloudAPI, see: [CloudAPI Documentation](https://a
 
 With chef already installed ``(> 0.10.0)``:
 
-    gem install knife-joyent
+    chef gem install knife-joyent
 
 ## Usage
 
