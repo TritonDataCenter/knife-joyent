@@ -82,7 +82,7 @@ class Chef
         res = case e
         when Excon::Response
           e
-        when Excon::Errors::Error
+        when Excon::Errors::HTTPStatusError
           e.response
         else
           raise
