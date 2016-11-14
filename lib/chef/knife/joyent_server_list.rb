@@ -29,9 +29,7 @@ class Chef
             (a.name || '') <=> (b.name || '')
           end,
           :compute_node => lambda do |a, b|
-            if a.attributes && b.attributes
-              (a.attributes["compute_node"]) <=> (b.attributes["compute_node"])
-            end
+            (a.compute_node || '') <=> (b.compute_node || '')
           end,
           :price => lambda do |a, b|
             if a.package && b.package
