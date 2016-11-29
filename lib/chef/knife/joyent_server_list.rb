@@ -29,9 +29,7 @@ class Chef
             (a.name || '') <=> (b.name || '')
           end,
           :compute_node => lambda do |a, b|
-            if a.attributes && b.attributes
-              (a.attributes["compute_node"]) <=> (b.attributes["compute_node"])
-            end
+            (a.compute_node || '') <=> (b.compute_node || '')
           end,
           :price => lambda do |a, b|
             if a.package && b.package
@@ -62,10 +60,9 @@ class Chef
         total_monthly_price = 0
 
         prev_compute_node = nil # only needed if sorting by compute_node
-
         self.connection.servers.sort(&sort_by(sort_matrix, sort_field)).each do |s|
 
-          compute_node = s.respond_to?(:attributes) ? s.attributes["compute_node"] : 'unknown'
+          compute_node = s.compute_node
           columns.times { servers << "" } if sort_field == :compute_node && prev_compute_node && prev_compute_node != compute_node
           prev_compute_node = compute_node
 
