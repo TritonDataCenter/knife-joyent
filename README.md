@@ -181,6 +181,7 @@ users.
  - [Eric Saxby](https://github.com/sax) - Wanelo
  - [Stephen Lauck](https://github.com/stephenlauck) - ModCloth
  - [Konstantin Gredeskoul](https://github.com/kigster) - Wanelo
+ - [James Hart](https://github.com/hjhart) - Wanelo
 
 ## Bootstrap template for smartos
 

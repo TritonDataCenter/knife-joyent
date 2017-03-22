@@ -8,7 +8,7 @@ class Chef
 
       option :show,
         :long => '--show field1,field1,.',
-        :description => 'Show additional fields. Supported: compute_node, tags',
+        :description => 'Show additional fields. Supported: compute_node, tags, image',
         :proc => Proc.new {|key| Chef::Config[:knife][:show] = key.to_s.split(/,/).map(&:to_sym)}
 
       option :sort,
@@ -18,7 +18,7 @@ class Chef
 
       banner "knife joyent server list <options>"
 
-      ADDITIONAL_FIELDS = [:compute_node, :tags]
+      ADDITIONAL_FIELDS = [:compute_node, :tags, :image]
 
       PRICE_COLUMN_WIDTH = 11
 
@@ -38,7 +38,7 @@ class Chef
           end
         }
 
-        columns = 10 + num_of_extra_keys
+        columns = 9 + num_of_extra_keys
 
 
         servers = [
@@ -46,7 +46,6 @@ class Chef
           ui.color('Name', :bold),
           ui.color('State', :bold),
           ui.color('Type', :bold),
-          ui.color('Image', :bold),
           ui.color('Flavor', :bold),
           ui.color('IPs', :bold),
           ui.color('      RAM', :bold),
@@ -54,12 +53,15 @@ class Chef
           ui.color('Price $/Month')
         ]
 
+        servers << ui.color('Image', :bold) if show?(:image)
         servers << ui.color('Compute Node', :bold) if show?(:compute_node)
         servers << ui.color('Tags', :bold) if show?(:tags)
 
         total_monthly_price = 0
 
         prev_compute_node = nil # only needed if sorting by compute_node
+        all_images = self.connection.images if show?(:image)
+
         self.connection.servers.sort(&sort_by(sort_matrix, sort_field)).each do |s|
 
           compute_node = s.compute_node
@@ -83,12 +85,21 @@ class Chef
           flavor = s.package || 'unknown'
 
           servers << s.type
-          servers << s.dataset
           servers << flavor
           servers << s.ips.join(",")
           servers << "#{sprintf "%6.2f", s.memory/1024.0} GB"
           servers << "#{sprintf "%5.0f", s.disk/1024} GB"
           servers << pricing.format_monthly_price(flavor, PRICE_COLUMN_WIDTH)
+
+          if show?(:image)
+            image = all_images.find { |image| image.id == s.image }
+            if image
+              servers << image.version
+            else
+              servers << ""
+            end
+
+          end
 
           servers << compute_node if show?(:compute_node)
           servers << s.tags.map { |k, v| "#{k}:#{v}" }.join(' ') if (show?(:tags) && (s.tags rescue nil))
@@ -104,7 +115,7 @@ class Chef
       end
 
       def add_total_price(servers, total_monthly_price)
-        8.times { servers << "" }
+        7.times { servers << "" }
         servers << "   Total"
         servers << pricing.format_price(total_monthly_price, PRICE_COLUMN_WIDTH)
       end
